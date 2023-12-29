@@ -85,11 +85,12 @@ function addRinLinkToSteamDB() {
 
 addRinLinkToSteamDB();
 
-function hexToRgb(hex) {
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-    return [r, g, b];
+function hexToRGB(hex) {
+    return [
+        parseInt(hex.substring(0, 2), 16),
+        parseInt(hex.substring(2, 4), 16),
+        parseInt(hex.substring(4, 6), 16)
+    ];
 }
 
 function colorize(str, parentElem) {
@@ -99,7 +100,7 @@ function colorize(str, parentElem) {
         hash = lstr.charCodeAt(i) + ((hash << 5) - hash);
     }
     let color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
-    let rgb = hexToRgb(color);
+    let rgb = hexToRGB(color);
 
     while (!getComputedStyle(parentElem).getPropertyValue("background-color").match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/)) {
         parentElem = parentElem.parentElement
@@ -111,7 +112,7 @@ function colorize(str, parentElem) {
     while (Math.abs(rgb[0] + rgb[1] + rgb[2] - (bgRgb[0] + bgRgb[1] + bgRgb[2])) < 300) {
         hash = (hash << 5) - hash;
         color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
-        rgb = hexToRgb(color);
+        rgb = hexToRGB(color);
     }
 
     return '#' + color.padStart(6, '0');
