@@ -31,24 +31,19 @@ function addRinLinkToSteam() {
     linkElement.appendChild(spanElement);
     const otherSiteInfo = document.querySelector('.apphub_OtherSiteInfo');
     otherSiteInfo.insertBefore(linkElement, otherSiteInfo.firstChild);
-    let appId;
-    let url;
-    if (document.querySelectorAll(".game_area_bubble").length === 0) { //You are on game
-        url = document.location.pathname;
-    } else { //You are on DLC
-        url = document.querySelectorAll(".game_area_bubble > div > p > a")[0].getAttribute("href");
-    }
+    const url = document.querySelectorAll(".game_area_bubble").length === 0
+        ? document.location.pathname // Game page
+        : document.querySelectorAll(".game_area_bubble > div > p > a")[0].getAttribute("href"); // DLC Page
     const regex = /\/app\/(\d+)\//;
-    appId = url.match(regex)[1];
+    const appId = url.match(regex)[1];
     const urlToFetch = `https://cs.rin.ru/forum/search.php?keywords=${appId}&fid%5B%5D=10&sr=topics&sf=firstpost`;
-    let urlToRedirect;
     GM_xmlhttpRequest({
         method: "GET", url: urlToFetch, onload: function (response) {
             // Parse the response as HTML
             const parser = new DOMParser();
             const doc = parser.parseFromString(response.responseText, "text/html");
             const topicSelector = doc.querySelectorAll(".titles:not(:first-child), .topictitle")[0];
-            urlToRedirect = "https://cs.rin.ru/forum/" + topicSelector.getAttribute('href'); // url cs.rin of the game
+            const urlToRedirect = "https://cs.rin.ru/forum/" + topicSelector.getAttribute('href'); // url cs.rin of the game
             // Adds the "href" attribute to the element
             linkElement.setAttribute("href", urlToRedirect);
             const tags = topicSelector.text.match(/\[([^\]]+)]/g).slice(1);
