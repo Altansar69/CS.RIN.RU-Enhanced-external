@@ -13,7 +13,7 @@
 // @grant           GM_xmlhttpRequest
 // ==/UserScript==
 
-function AddRinLinkToSteam() {
+function addRinLinkToSteam() {
     if (document.location.origin.match("store.steampowered.com")) { //If you are on Steam
         //Create the button
         const linkElement = document.createElement("a");
@@ -32,16 +32,16 @@ function AddRinLinkToSteam() {
         otherSiteInfo.insertBefore(linkElement, otherSiteInfo.firstChild);
 
         //Get appid of the game
-        let appid;
-        let URL;
+        let appId;
+        let url;
         if (document.querySelectorAll(".game_area_bubble").length === 0) { //You are on game
-            URL = document.location.pathname;
+            url = document.location.pathname;
         } else { //You are on DLC
-            URL = document.querySelectorAll(".game_area_bubble > div > p > a")[0].getAttribute("href");
+            url = document.querySelectorAll(".game_area_bubble > div > p > a")[0].getAttribute("href");
         }
         const regex = /\/app\/(\d+)\//; // This regex retrieves the appid from the steam id
-        appid = URL.match(regex)[1];
-        const urlToFetch = `https://cs.rin.ru/forum/search.php?keywords=${appid}&fid%5B%5D=10&sr=topics&sf=firstpost`; // Search URL of the game page
+        appId = url.match(regex)[1];
+        const urlToFetch = `https://cs.rin.ru/forum/search.php?keywords=${appId}&fid%5B%5D=10&sr=topics&sf=firstpost`; // Search URL of the game page
         let urlToRedirect;
         GM_xmlhttpRequest({
             method: "GET", url: urlToFetch, onload: function (response) {
@@ -75,7 +75,7 @@ function AddRinLinkToSteam() {
     }
 }
 
-AddRinLinkToSteam();
+addRinLinkToSteam();
 
 function addRinLinkToSteamDB() {
     if (document.location.origin.match("steamdb.info")) { //If you are on Steam)
@@ -85,12 +85,8 @@ function addRinLinkToSteamDB() {
 
 addRinLinkToSteamDB();
 
-function hexToRGB(hex) {
-    return [
-        parseInt(hex.substring(0, 2), 16),
-        parseInt(hex.substring(2, 4), 16),
-        parseInt(hex.substring(4, 6), 16)
-    ];
+function hexToRgb(hex) {
+    return [parseInt(hex.substring(0, 2), 16), parseInt(hex.substring(2, 4), 16), parseInt(hex.substring(4, 6), 16)];
 }
 
 function colorize(str, parentElem) {
@@ -100,7 +96,7 @@ function colorize(str, parentElem) {
         hash = lstr.charCodeAt(i) + ((hash << 5) - hash);
     }
     let color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
-    let rgb = hexToRGB(color);
+    let rgb = hexToRgb(color);
 
     while (!getComputedStyle(parentElem).getPropertyValue("background-color").match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/)) {
         parentElem = parentElem.parentElement
@@ -112,7 +108,7 @@ function colorize(str, parentElem) {
     while (Math.abs(rgb[0] + rgb[1] + rgb[2] - (bgRgb[0] + bgRgb[1] + bgRgb[2])) < 300) {
         hash = (hash << 5) - hash;
         color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
-        rgb = hexToRGB(color);
+        rgb = hexToRgb(color);
     }
 
     return '#' + color.padStart(6, '0');
