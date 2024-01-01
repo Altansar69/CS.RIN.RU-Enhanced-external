@@ -74,7 +74,7 @@ function addRinButton(page) {
 }
 
 function updatePage(appId, rinButton, page) {
-     getRinTopic(appId, function (url, tags) {
+    getRinTopic(appId, function (url, tags) {
         // Adds the cs.rin topic "href" attribute to the button
         addRinUrl(rinButton, url);
         addRinTags(tags, page);
@@ -155,6 +155,7 @@ function addRinTags(tags, page) {
 
     titleElem.innerHTML = newContent;
 }
+
 function hexToRgb(hex) {
     return [parseInt(hex.substring(0, 2), 16), parseInt(hex.substring(2, 4), 16), parseInt(hex.substring(4, 6), 16)];
 }
