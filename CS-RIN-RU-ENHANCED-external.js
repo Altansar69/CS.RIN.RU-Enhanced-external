@@ -25,8 +25,8 @@ function addRinLinkToSteam() {
         : document.querySelectorAll(".game_area_bubble > div > p > a")[0].getAttribute("href"); // DLC Page
     const regex = /\/app\/(\d+)\//;
     const appId = pageUrl.match(regex)[1];
-
-    updatePage(appId, rinButton, page);
+    const developer = encodeURIComponent(document.querySelector("#developers_list").firstElementChild.textContent);
+    updatePage(appId, developer, rinButton, page);
 
 }
 
@@ -39,8 +39,10 @@ function addRinLinkToSteamDB() {
     const page = "steamdb"
     const rinButton = addRinButton(page);
     const appId = document.querySelectorAll('.span3')[0].nextElementSibling.textContent;
-
-    updatePage(appId, rinButton, page)
+    const developer = encodeURIComponent(document.querySelectorAll('.span3')[0].parentElement
+        .nextElementSibling.nextElementSibling
+        .firstElementChild.nextElementSibling.textContent.replace(/\n/g, ""))
+    updatePage(appId, developer, rinButton, page)
 }
 
 addRinLinkToSteamDB();
@@ -73,45 +75,58 @@ function addRinButton(page) {
     return rinButton;
 }
 
-function updatePage(appId, rinButton, page) {
-    getRinTopic(appId, function (url, tags) {
+function updatePage(appId, developer, rinButton, page) {
+    getRinTopic(appId, developer, function (url, tags) {
         // Adds the cs.rin topic "href" attribute to the button
         addRinUrl(rinButton, url);
         addRinTags(tags, page);
     });
 }
 
-function getRinTopic(appId, callback) {
+function getRinTopic(appId, developer, callback) {
     const rinSearchUrl = `https://cs.rin.ru/forum/search.php?keywords=${appId}&fid%5B%5D=10&sr=topics&sf=firstpost`;
-    let redirectUrl = "";
+    console.log(rinSearchUrl);
     GM_xmlhttpRequest({
         method: "GET", url: rinSearchUrl, onload: function (response) {
-            // Parse the response as HTML
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(response.responseText, "text/html");
-            const topicSelector = doc.querySelectorAll(".titles:not(:first-child), .topictitle")[0];
-            const rinURL = topicSelector
-                ? topicSelector.getAttribute("href") // cs.rin URL for the game
-                : "posting.php?mode=post&f=10"; // Create a new topic in the CS.RIN forum
-
-            redirectUrl = "https://cs.rin.ru/forum/" + rinURL;
-
-            // const tags = topicSelector.text.match(/\[([^\]]+)]/g).slice(1);
-            const tags = topicSelector
-                ? topicSelector.text.match(/\[([^\]]+)]/g).slice(1)
-                : ["[Not on RIN]"];
-            let tagsJoined = tags.join(" ");
-            if (tagsJoined.length === 0) { //Default tags
-                tags.push("[Cracked easily]");
-            }
-
-            // Call the callback function with the URL and tags
-            if (callback && typeof callback === "function") {
-                callback(redirectUrl, tags);
+            const doc = new DOMParser().parseFromString(response.responseText, "text/html");
+            const topicSelectors = doc.querySelectorAll(".titles:not(:first-child), .topictitle");
+            if (topicSelectors.length > 1) {
+                getRinTopicAdvanced(appId, developer, callback);
+            } else {
+                processResponse(response.responseText, callback);
             }
         }
     });
+}
 
+function getRinTopicAdvanced(appId, developer, callback) {
+    const rinSearchUrl = `https://cs.rin.ru/forum/search.php?keywords=${appId}+${developer}&fid%5B%5D=10&sr=topics&sf=firstpost`;
+    GM_xmlhttpRequest({
+        method: "GET", url: rinSearchUrl, onload: function (response) {
+            processResponse(response.responseText, callback);
+        }
+    });
+}
+
+function processResponse(responseText, callback) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(responseText, "text/html");
+    const topicSelectors = doc.querySelectorAll(".titles:not(:first-child), .topictitle");
+    const topicSelector = topicSelectors[0];
+    const rinURL = topicSelector
+        ? topicSelector.getAttribute("href")
+        : "posting.php?mode=post&f=10";
+    const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
+    const tags = topicSelector
+        ? topicSelector.text.match(/\[([^\]]+)]/g).slice(1)
+        : ["[Not on RIN]"];
+    let tagsJoined = tags.join(" ");
+    if (tagsJoined.length === 0) {
+        tags.push("[Cracked easily]");
+    }
+    if (callback && typeof callback === "function") {
+        callback(redirectUrl, tags);
+    }
 }
 
 function addRinUrl(rinButton, url) {
