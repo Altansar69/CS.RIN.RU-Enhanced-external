@@ -77,11 +77,7 @@ function updatePage(appId, rinButton, page) {
      getRinTopic(appId, function (url, tags) {
         // Adds the cs.rin topic "href" attribute to the button
         addRinUrl(rinButton, url);
-        if (page === "steam") {
-            addRinTagsSteam(tags);
-        } else if (page === "steamdb") {
-            addRinTagsSteamDB(tags);
-        }
+        addRinTags(tags, page);
     });
 }
 
@@ -125,29 +121,29 @@ function addRinUrl(rinButton, url) {
 function addRinTagsSteam(tags) {
     const titleElem = document.getElementById("appHubAppName");
     titleElem.textContent += " " + tags;
-    const parentElem = titleElem.parentElement;
-    const bracketRegex = /[\[\]]/g;
 
-    let newContent = titleElem.textContent;
+    return titleElem;
 
-    tags.forEach(tag => {
-        const color = colorize(tag, parentElem);
-        const tagSpan = `<span style='color:${color};'>[</span>` +
-            `<span style='color:${color};font-size: 0.9em;'>` +
-            `${tag.replace(bracketRegex, "")}</span>` +
-            `<span style='color:${color};'>]</span>`;
-        newContent = newContent.replace(tag, tagSpan);
-    });
-
-    titleElem.innerHTML = newContent;
 }
 
 function addRinTagsSteamDB(tags) {
     let titleElem = document.querySelector('[itemprop="name"]');
     titleElem.textContent += " " + tags;
+
+    return titleElem;
+}
+
+function addRinTags(tags, page) {
+    const titleElem = page === "steam"
+        ? addRinTagsSteam(tags)
+        : page === "steamdb"
+            ? addRinTagsSteamDB(tags)
+            : null;
+
     const bracketRegex = /[\[\]]/g;
 
     let newContent = titleElem.textContent;
+
     tags.forEach(tag => {
         const color = colorize(tag, titleElem);
         const tagSpan = `<span style='color:${color};'>[</span>` +
@@ -156,9 +152,9 @@ function addRinTagsSteamDB(tags) {
             `<span style='color:${color};'>]</span>`;
         newContent = newContent.replace(tag, tagSpan);
     });
+
     titleElem.innerHTML = newContent;
 }
-
 function hexToRgb(hex) {
     return [parseInt(hex.substring(0, 2), 16), parseInt(hex.substring(2, 4), 16), parseInt(hex.substring(4, 6), 16)];
 }
