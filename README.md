@@ -1,5 +1,5 @@
 # ![Icon of CS.RIN.RU](https://i.ibb.co/zXtW7WD/csrinfavicon32.png) CS RIN RU Enhanced (external)
-![License](https://img.shields.io/badge/License-UNLICENSE-red)  ![OS](https://img.shields.io/badge/OS-Windows%2FmacOS%2FLinux-green)
+![License](https://img.shields.io/badge/License-UNLICENSE-red) ![Release](https://img.shields.io/github/v/release/Altansar69/CS.RIN.RU-Enhanced-external) ![OS](https://img.shields.io/badge/OS-Windows%2FmacOS%2FLinux-green)
 
 Extension of [CS RIN RU Enhanced mod](https://github.com/SubZeroPL/cs-rin-ru-enhanced-mod) (to be used in conjunction with) for everything concerning the forum, but act on external pages (Steam, SteamDB etc...) and not on the forum itself.
 
