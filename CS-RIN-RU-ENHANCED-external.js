@@ -20,8 +20,9 @@ function addRinLinkToSteam() {
     const page = "steam"
     const rinButton = addRinButton(page);
 
-    const pageUrl = document.querySelectorAll(".game_area_bubble").length === 0 ? document.location.pathname // Game page
-        : document.querySelectorAll(".game_area_bubble > div > p > a")[0].getAttribute("href"); // DLC Page
+    const pageUrl = !document.querySelector(".game_area_bubble") ? document.location.pathname // Game page
+        : document.querySelector(".game_area_bubble > div > p > a").getAttribute("href"); // DLC Page
+
     const regex = /\/app\/(\d+)\//;
     const appId = pageUrl.match(regex)[1];
     const developer = encodeURIComponent(document.querySelector("#developers_list").firstElementChild.textContent);
@@ -35,8 +36,10 @@ function addRinLinkToSteamDB() {
 
     const page = "steamdb"
     const rinButton = addRinButton(page);
-    const appId = document.querySelectorAll('.span3')[0].nextElementSibling.textContent;
-    const developer = encodeURIComponent(document.querySelectorAll('.span3')[0].parentElement
+
+    const firstEntry = document.querySelector('.span3');
+    const appId = firstEntry.nextElementSibling.textContent;
+    const developer = encodeURIComponent(firstEntry.parentElement
         .nextElementSibling.nextElementSibling
         .firstElementChild.nextElementSibling.textContent.replace(/\n/g, ""))
     updatePage(appId, developer, rinButton, page)
@@ -100,6 +103,7 @@ function getRinTopic(appId, developer, callback) {
 
 function getRinTopicAdvanced(appId, developer, callback) {
     const rinSearchUrl = `https://cs.rin.ru/forum/search.php?keywords=${appId}+${developer}&fid%5B%5D=10&sr=topics&sf=firstpost`;
+    console.log(rinSearchUrl);
     GM_xmlhttpRequest({
         method: "GET", url: rinSearchUrl, onload: function (response) {
             processResponse(response.responseText, callback, function () {
@@ -128,8 +132,7 @@ function processResponse(responseText, callback, retryFunction) {
         return;
     }
 
-    const topicSelectors = doc.querySelectorAll(".titles:not(:first-child), .topictitle");
-    const topicSelector = topicSelectors[0];
+    const topicSelector = doc.querySelector(".titles:not(:first-child), .topictitle");
     const rinURL = topicSelector ? topicSelector.getAttribute("href") : "posting.php?mode=post&f=10";
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
     const tags = topicSelector ? topicSelector.text.match(/\[([^\]]+)]/g).slice(1) : ["[Not on RIN]"];
