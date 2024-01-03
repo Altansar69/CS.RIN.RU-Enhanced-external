@@ -3,7 +3,7 @@
 // @name:fr         CS.RIN.RU Amélioré (Externe)
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @namespace       Altansar
-// @version         1.0.0
+// @version         1.1.0
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
@@ -12,6 +12,7 @@
 // @icon            https://i.ibb.co/p1k6cq6/image.png
 // @grant           GM_xmlhttpRequest
 // ==/UserScript==
+
 
 function addRinLinkToSteam() {
     if (!document.location.origin.match("store.steampowered.com")) return;
