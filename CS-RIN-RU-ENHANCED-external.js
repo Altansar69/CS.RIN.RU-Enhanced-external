@@ -137,8 +137,7 @@ function processResponse(responseText, callback, retryFunction) {
     const rinURL = topicSelector ? topicSelector.getAttribute("href") : "posting.php?mode=post&f=10";
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
     const tags = topicSelector ? topicSelector.text.match(/\[([^\]]+)]/g).slice(1) : ["[Not on RIN]"];
-    let tagsJoined = tags.join(" ");
-    if (tagsJoined.length === 0) {
+    if (tags.length === 0) {
         tags.push("[Cracked easily]");
     }
     if (callback && typeof callback === "function") {
@@ -152,7 +151,7 @@ function addRinUrl(rinButton, url) {
 
 function addRinTagsSteam(tags) {
     const titleElem = document.getElementById("appHubAppName");
-    titleElem.textContent += " " + tags;
+    titleElem.textContent += " " + tags.join(" ");
 
     return titleElem;
 
@@ -160,7 +159,7 @@ function addRinTagsSteam(tags) {
 
 function addRinTagsSteamDB(tags) {
     let titleElem = document.querySelector('[itemprop="name"]');
-    titleElem.textContent += " " + tags;
+    titleElem.textContent += " " + tags.join(" ");
 
     return titleElem;
 }
