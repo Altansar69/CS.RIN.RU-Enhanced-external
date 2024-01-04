@@ -3,7 +3,7 @@
 // @name:fr         CS.RIN.RU Amélioré (Externe)
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @namespace       Altansar
-// @version         1.0.0
+// @version         1.1.0
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
@@ -13,33 +13,33 @@
 // @grant           GM_xmlhttpRequest
 // ==/UserScript==
 
+
 function addRinLinkToSteam() {
-    if (!document.location.origin.match("store.steampowered.com")) {
-        return;
-    }
+    if (!document.location.origin.match("store.steampowered.com")) return;
+
     const page = "steam"
     const rinButton = addRinButton(page);
 
-    const pageUrl = document.querySelectorAll(".game_area_bubble").length === 0
-        ? document.location.pathname // Game page
-        : document.querySelectorAll(".game_area_bubble > div > p > a")[0].getAttribute("href"); // DLC Page
+    const pageUrl = !document.querySelector(".game_area_bubble") ? document.location.pathname // Game page
+        : document.querySelector(".game_area_bubble > div > p > a").getAttribute("href"); // DLC Page
+
     const regex = /\/app\/(\d+)\//;
     const appId = pageUrl.match(regex)[1];
     const developer = encodeURIComponent(document.querySelector("#developers_list").firstElementChild.textContent);
     updatePage(appId, developer, rinButton, page);
-
 }
 
 addRinLinkToSteam();
 
 function addRinLinkToSteamDB() {
-    if (!document.location.origin.match("steamdb.info")) {
-        return;
-    }
+    if (!document.location.origin.match("steamdb.info")) return;
+
     const page = "steamdb"
     const rinButton = addRinButton(page);
-    const appId = document.querySelectorAll('.span3')[0].nextElementSibling.textContent;
-    const developer = encodeURIComponent(document.querySelectorAll('.span3')[0].parentElement
+
+    const firstEntry = document.querySelector('.span3');
+    const appId = firstEntry.nextElementSibling.textContent;
+    const developer = encodeURIComponent(firstEntry.parentElement
         .nextElementSibling.nextElementSibling
         .firstElementChild.nextElementSibling.textContent.replace(/\n/g, ""))
     updatePage(appId, developer, rinButton, page)
@@ -93,7 +93,9 @@ function getRinTopic(appId, developer, callback) {
             if (topicSelectors.length > 1) {
                 getRinTopicAdvanced(appId, developer, callback);
             } else {
-                processResponse(response.responseText, callback);
+                processResponse(response.responseText, callback, function () {
+                    getRinTopic(appId, developer, callback); // Retry getRinTopic if search fails
+                });
             }
         }
     });
@@ -101,25 +103,39 @@ function getRinTopic(appId, developer, callback) {
 
 function getRinTopicAdvanced(appId, developer, callback) {
     const rinSearchUrl = `https://cs.rin.ru/forum/search.php?keywords=${appId}+${developer}&fid%5B%5D=10&sr=topics&sf=firstpost`;
+    console.log(rinSearchUrl);
     GM_xmlhttpRequest({
         method: "GET", url: rinSearchUrl, onload: function (response) {
-            processResponse(response.responseText, callback);
+            processResponse(response.responseText, callback, function () {
+                getRinTopicAdvanced(appId, developer, callback); // Retry getRinTopicAdvanced if search fails
+            });
         }
     });
 }
 
-function processResponse(responseText, callback) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(responseText, "text/html");
-    const topicSelectors = doc.querySelectorAll(".titles:not(:first-child), .topictitle");
-    const topicSelector = topicSelectors[0];
-    const rinURL = topicSelector
-        ? topicSelector.getAttribute("href")
-        : "posting.php?mode=post&f=10";
+let retryScheduled = false; // Flag to track if a retry is scheduled
+function processResponse(responseText, callback, retryFunction) {
+    if (retryScheduled) return; // If a retry is scheduled, don't do anything
+
+    const doc = new DOMParser().parseFromString(responseText, "text/html");
+
+    // Check if search was successful
+    const checkElement = doc.querySelector("#wrapcentre > form > table.tablebg > tbody > tr:nth-child(1) > th:nth-child(1)");
+    if (!checkElement) {
+        if (retryFunction) {
+            retryScheduled = true; // Set the flag to true to block further retries
+            setTimeout(() => {
+                retryScheduled = false; // Reset the flag when the retry function is called
+                retryFunction(); // Call the retryFunction, whichever function called this function
+            }, 200);
+        }
+        return;
+    }
+
+    const topicSelector = doc.querySelector(".titles:not(:first-child), .topictitle");
+    const rinURL = topicSelector ? topicSelector.getAttribute("href") : "posting.php?mode=post&f=10";
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
-    const tags = topicSelector
-        ? topicSelector.text.match(/\[([^\]]+)]/g).slice(1)
-        : ["[Not on RIN]"];
+    const tags = topicSelector ? topicSelector.text.match(/\[([^\]]+)]/g).slice(1) : ["[Not on RIN]"];
     let tagsJoined = tags.join(" ");
     if (tagsJoined.length === 0) {
         tags.push("[Cracked easily]");
@@ -161,10 +177,7 @@ function addRinTags(tags, page) {
 
     tags.forEach(tag => {
         const color = colorize(tag, titleElem);
-        const tagSpan = `<span style='color:${color};'>[</span>` +
-            `<span style='color:${color};font-size: 0.9em;'>` +
-            `${tag.replace(bracketRegex, "")}</span>` +
-            `<span style='color:${color};'>]</span>`;
+        const tagSpan = `<span style='color:${color};'>[</span>` + `<span style='color:${color};font-size: 0.9em;'>` + `${tag.replace(bracketRegex, "")}</span>` + `<span style='color:${color};'>]</span>`;
         newContent = newContent.replace(tag, tagSpan);
     });
 
