@@ -3,10 +3,11 @@
 // @name:fr         CS.RIN.RU Amélioré (Externe)
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @namespace       Altansar
-// @version         1.1.0
+// @version         1.1.1
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
+// @author          Altansar / Reddiepoint
 // @match           *://store.steampowered.com/app/*
 // @match           *://steamdb.info/app/*
 // @icon            https://i.ibb.co/p1k6cq6/image.png
@@ -177,7 +178,7 @@ function addRinTags(tags, page) {
 
     tags.forEach(tag => {
         const color = colorize(tag, titleElem);
-        const tagSpan = `<span style='color:${color};'>[</span>` + `<span style='color:${color};font-size: 0.9em;'>` + `${tag.replace(bracketRegex, "")}</span>` + `<span style='color:${color};'>]</span>`;
+        const tagSpan = `<span style='color:${color};'>[</span><span style='color:${color};font-size: 0.9em;'>${tag.replace(bracketRegex, "")}</span><span style='color:${color};'>]</span>`;
         newContent = newContent.replace(tag, tagSpan);
     });
 
