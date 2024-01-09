@@ -19,7 +19,7 @@ see: [issues](https://github.com/Altansar69/CS.RIN.RU-Enhanced-external/issues)
 
 ## 🔨 Installation:
 1) Download a script extension like [Violentmonkey](https://violentmonkey.github.io/) or [Tampermonkey](https://www.tampermonkey.net/).
-2) Simply click on [this link](https://raw.githubusercontent.com/Altansar69/CS.RIN.RU-Enhanced-external/master/CS-RIN-RU-ENHANCED-external.js) and a pop-up window should appear asking you if you wish to install the extension.
+2) Simply click on [this link](https://raw.githubusercontent.com/Altansar69/CS.RIN.RU-Enhanced-external/master/CS-RIN-RU-ENHANCED-external.user.js) and a pop-up window should appear asking you if you wish to install the extension.
 
 **Notes:** The script supports automatic updates, which means you don't have to download it again each time it's updated.
 
