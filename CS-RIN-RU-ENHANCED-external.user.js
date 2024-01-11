@@ -137,9 +137,7 @@ function processResponse(responseText, callback, retryFunction) {
     const rinURL = topicSelector ? topicSelector.getAttribute("href") : "posting.php?mode=post&f=10";
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
     const tags = topicSelector ? topicSelector.text.match(/\[([^\]]+)]/g).slice(1) : ["[Not on RIN]"];
-    if (tags.length === 0) {
-        tags.push("[Cracked easily]");
-    }
+
     if (callback && typeof callback === "function") {
         callback(redirectUrl, tags);
     }
