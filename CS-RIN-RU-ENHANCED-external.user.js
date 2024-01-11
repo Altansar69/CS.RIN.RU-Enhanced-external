@@ -21,8 +21,8 @@ function addRinLinkToSteam() {
     const page = "steam"
     const rinButton = addRinButton(page);
 
-    const pageUrl = !document.querySelector(".game_area_bubble") ? document.location.pathname // Game page
-        : document.querySelector(".game_area_bubble > div > p > a").getAttribute("href"); // DLC Page
+    const dlcPage = document.querySelector("div.game_area_bubble.game_area_dlc_bubble");
+    const pageUrl = dlcPage?.querySelector("div > p > a")?.href ?? document.location.pathname;
 
     const regex = /\/app\/(\d+)\//;
     const appId = pageUrl.match(regex)[1];
