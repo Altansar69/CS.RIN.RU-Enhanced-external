@@ -3,7 +3,7 @@
 // @name:fr         CS.RIN.RU Amélioré (Externe)
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @namespace       Altansar
-// @version         1.1.3
+// @version         1.1.4
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
@@ -137,7 +137,10 @@ function processResponse(responseText, callback, retryFunction) {
     const rinURL = topicSelector ? topicSelector.getAttribute("href") : "posting.php?mode=post&f=10";
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
     const tags = topicSelector ? topicSelector.text.match(/(?<!^)\[([^\]]+)]/g)?.slice(0) ?? [] : ["[Not on RIN]"];
-
+    if(tags.length===0) {
+        tags.push(""); //Insert default tag
+    }
+    
     if (callback && typeof callback === "function") {
         callback(redirectUrl, tags);
     }
