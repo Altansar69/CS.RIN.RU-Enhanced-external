@@ -84,6 +84,8 @@ function addRinButton(page) {
         ? document.querySelector('.apphub_OtherSiteInfo')
         : page === "steamdb"
             ? document.querySelectorAll('.app-links')[1]
+: page === "PCGW"
+    ? document.querySelectorAll('.template-infobox-icons')[0]
             : null;
     otherSiteInfo.insertBefore(rinButton, otherSiteInfo.firstChild);
 
@@ -180,11 +182,20 @@ function addRinTagsSteamDB(tags) {
     return titleElem;
 }
 
+function addRinTagsPCGW(tags) {
+    let titleElem = document.getElementsByClassName("article-title")[0];
+    titleElem.textContent += " " + tags.join(" ");
+
+    return titleElem;
+}
+
 function addRinTags(tags, page) {
     const titleElem = page === "steam"
         ? addRinTagsSteam(tags)
         : page === "steamdb"
             ? addRinTagsSteamDB(tags)
+        : page === "PCGW"
+            ? addRinTagsPCGW(tags)
             : null;
 
     const bracketRegex = /[\[\]]/g;
