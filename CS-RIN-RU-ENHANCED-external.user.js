@@ -3,7 +3,7 @@
 // @name:fr         CS.RIN.RU Amélioré (Externe)
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @namespace       Altansar
-// @version         1.1.3
+// @version         1.1.4
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
@@ -21,8 +21,8 @@ function addRinLinkToSteam() {
     const page = "steam"
     const rinButton = addRinButton(page);
 
-    const pageUrl = !document.querySelector(".game_area_bubble") ? document.location.pathname // Game page
-        : document.querySelector(".game_area_bubble > div > p > a").getAttribute("href"); // DLC Page
+    const dlcPage = document.querySelector("div.game_area_bubble.game_area_dlc_bubble");
+    const pageUrl = dlcPage?.querySelector("div > p > a")?.href ?? document.location.pathname;
 
     const regex = /\/app\/(\d+)\//;
     const appId = pageUrl.match(regex)[1];
@@ -136,10 +136,11 @@ function processResponse(responseText, callback, retryFunction) {
     const topicSelector = doc.querySelector(".titles:not(:first-child), .topictitle");
     const rinURL = topicSelector ? topicSelector.getAttribute("href") : "posting.php?mode=post&f=10";
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
-    const tags = topicSelector ? topicSelector.text.match(/\[([^\]]+)]/g).slice(1) : ["[Not on RIN]"];
-    if (tags.length === 0) {
-        tags.push("[Cracked easily]");
+    const tags = topicSelector ? topicSelector.text.match(/(?<!^)\[([^\]]+)]/g)?.slice(0) ?? [] : ["[Not on RIN]"];
+    if(tags.length===0) {
+        tags.push(""); //Insert default tag
     }
+    
     if (callback && typeof callback === "function") {
         callback(redirectUrl, tags);
     }
