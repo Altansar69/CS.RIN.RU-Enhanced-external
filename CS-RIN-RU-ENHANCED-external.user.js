@@ -136,7 +136,7 @@ function processResponse(responseText, callback, retryFunction) {
     const topicSelector = doc.querySelector(".titles:not(:first-child), .topictitle");
     const rinURL = topicSelector ? topicSelector.getAttribute("href") : "posting.php?mode=post&f=10";
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
-    const tags = topicSelector ? topicSelector.text.match(/\[([^\]]+)]/g).slice(1) : ["[Not on RIN]"];
+    const tags = topicSelector ? topicSelector.text.match(/(?<!^)\[([^\]]+)]/g)?.slice(0) ?? [] : ["[Not on RIN]"];
 
     if (callback && typeof callback === "function") {
         callback(redirectUrl, tags);
