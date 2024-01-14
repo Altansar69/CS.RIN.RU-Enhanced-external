@@ -51,6 +51,7 @@ addRinLinkToSteamDB();
 
 function addRinLinkToPCGW() {
     if (!document.location.origin.match("pcgamingwiki.com")) return;
+
     const page = "PCGW"
     const rinButton = addRinButton(page);
 
@@ -75,22 +76,24 @@ function addRinButton(page) {
     imgElement.setAttribute("src", rinImage);
     spanElement.appendChild(imgElement);
 
+    // Add text for RIN button on SteamDB
     if (page === "steamdb") {
         spanElement.append("CS.RIN.RU");
     }
 
-    if(page === "PCGW") {
+    // Make sure the button has the same size as the other buttons
+    if (page === "PCGW") {
         rinButton.className = "svg-icon template-infobox-icon";
     }
 
     rinButton.append(spanElement);
-    const otherSiteInfo = page === "steam"
-        ? document.querySelector('.apphub_OtherSiteInfo')
-        : page === "steamdb"
-            ? document.querySelectorAll('.app-links')[1]
-: page === "PCGW"
-    ? document.querySelectorAll('.template-infobox-icons')[0]
-            : null;
+
+    const siteSelectors = {
+        "steam": () => document.querySelector('.apphub_OtherSiteInfo'),
+        "steamdb": () => document.querySelectorAll('.app-links')[1],
+        "PCGW": () => document.querySelectorAll('.template-infobox-icons')[0]
+    };
+    const otherSiteInfo = (siteSelectors[page] || (() => null))();
     otherSiteInfo.insertBefore(rinButton, otherSiteInfo.firstChild);
 
     return rinButton;
@@ -171,37 +174,23 @@ function addRinUrl(rinButton, url) {
     rinButton.setAttribute("href", url);
 }
 
-function addRinTagsSteam(tags) {
-    const titleElem = document.getElementById("appHubAppName");
+function appendRinTags(tags, titleElem) {
     titleElem.textContent += " " + tags.join(" ");
-
-    return titleElem;
-
-}
-
-function addRinTagsSteamDB(tags) {
-    let titleElem = document.querySelector('[itemprop="name"]');
-    titleElem.textContent += " " + tags.join(" ");
-
-    return titleElem;
-}
-
-function addRinTagsPCGW(tags) {
-    let titleElem = document.getElementsByClassName("article-title")[0];
-    titleElem.textContent += " " + tags.join(" ");
-
     return titleElem;
 }
 
 function addRinTags(tags, page) {
-    const titleElem = page === "steam"
-        ? addRinTagsSteam(tags)
-        : page === "steamdb"
-            ? addRinTagsSteamDB(tags)
-        : page === "PCGW"
-            ? addRinTagsPCGW(tags)
-            : null;
+    const titleLocations = {
+        "steam": () => document.getElementById("appHubAppName"),
+        "steamdb": () => document.querySelector('[itemprop="name"]'),
+        "PCGW": () => document.getElementsByClassName("article-title")[0]
+    };
 
+    // const titleElem = (tagFunctions[page] || (() => null))(tags);
+    const titleLocation = (titleLocations[page] || (() => null))();
+    const titleElem = appendRinTags(tags, titleLocation);
+
+    // Add colours to the tags
     const bracketRegex = /[\[\]]/g;
 
     let newContent = titleElem.textContent;
@@ -230,11 +219,11 @@ function colorize(str, parentElem) {
     let rgb = hexToRgb(color);
 
     while (!getComputedStyle(parentElem).getPropertyValue("background-color").match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/)) {
-        parentElem = parentElem.parentElement
+        parentElem = parentElem.parentElement;
     }
     let bgColour = getComputedStyle(parentElem).getPropertyValue("background-color");
     let matches = bgColour.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-    const bgRgb = [parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3])]
+    const bgRgb = [parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3])];
 
     while (Math.abs(rgb[0] + rgb[1] + rgb[2] - (bgRgb[0] + bgRgb[1] + bgRgb[2])) < 300) {
         hash = (hash << 5) - hash;
