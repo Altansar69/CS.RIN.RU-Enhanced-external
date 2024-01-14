@@ -78,7 +78,9 @@ function addRinButton(page) {
 
     // Add text for RIN button on SteamDB
     if (page === "steamdb") {
-        spanElement.append("CS.RIN.RU");
+        imgElement.style.height = "16px";
+        imgElement.style.width = "16px";
+        spanElement.append(" CS.RIN.RU");
     }
 
     // Make sure the button has the same size as the other buttons
