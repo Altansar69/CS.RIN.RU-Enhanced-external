@@ -2,8 +2,9 @@
 // @name            CS.RIN.RU Enhanced (External)
 // @name:fr         CS.RIN.RU Amélioré (Externe)
 // @name:pt         CS.RIN.RU Melhorado (Externo)
+// @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       Altansar
-// @version         1.1.4
+// @version         1.1.5
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
@@ -138,9 +139,9 @@ function processResponse(responseText, callback, retryFunction) {
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
     const tags = topicSelector ? topicSelector.text.match(/(?<!^)\[([^\]]+)]/g)?.slice(0) ?? [] : ["[Not on RIN]"];
     if(tags.length===0) {
-        tags.push(""); //Insert default tag
+        tags.push("Cracked"); //Insert default tag
     }
-    
+
     if (callback && typeof callback === "function") {
         callback(redirectUrl, tags);
     }
@@ -192,25 +193,41 @@ function hexToRgb(hex) {
 
 function colorize(str, parentElem) {
     let lstr = str.toLowerCase();
+
     let hash = 0;
     for (let i = 0; i < lstr.length; i++) {
         hash = lstr.charCodeAt(i) + ((hash << 5) - hash);
     }
+
     let color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
+
     let rgb = hexToRgb(color);
 
     while (!getComputedStyle(parentElem).getPropertyValue("background-color").match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/)) {
-        parentElem = parentElem.parentElement
+        parentElem = parentElem.parentElement;
     }
     let bgColour = getComputedStyle(parentElem).getPropertyValue("background-color");
     let matches = bgColour.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-    const bgRgb = [parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3])]
+    const bgRgb = [parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3])];
 
     while (Math.abs(rgb[0] + rgb[1] + rgb[2] - (bgRgb[0] + bgRgb[1] + bgRgb[2])) < 300) {
         hash = (hash << 5) - hash;
         color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
         rgb = hexToRgb(color);
     }
+
+    if (color === "e151a3") {      // Check if the generated color is #e151a3 and replace it with #FF0000 [Not on RIN]
+        color = "9E9E9E";
+    }
+
+    if (color === "db2184") {      // Check if the generated color is #db2184 and replace it with #FF0000 [NOT CRACKED]
+        color = "FF0000";
+    }
+
+    if (color === "e99252") {      // Check if the generated color is #e99252 and replace it with #FFD700 [Cracked]
+        color = "FBC02D";
+    }
+
 
     return '#' + color.padStart(6, '0');
 }
