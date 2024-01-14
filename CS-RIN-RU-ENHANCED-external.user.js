@@ -4,7 +4,7 @@
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       Altansar
-// @version         1.1.5
+// @version         1.1.4
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
@@ -216,9 +216,18 @@ function colorize(str, parentElem) {
         rgb = hexToRgb(color);
     }
 
-    if (color === "e151a3") {      // Check if the generated color is #e151a3 and replace it with #FF0000
+    if (color === "e151a3") {      // Check if the generated color is #e151a3 and replace it with #FF0000 [Not on RIN]
+        color = "9E9E9E";
+    }
+
+    if (color === "db2184") {      // Check if the generated color is #db2184 and replace it with #FF0000 [NOT CRACKED]
         color = "FF0000";
     }
+
+    if (color === "e99252") {      // Check if the generated color is #e99252 and replace it with #FFD700 [Cracked]
+        color = "FBC02D";
+    }
+
 
     return '#' + color.padStart(6, '0');
 }
