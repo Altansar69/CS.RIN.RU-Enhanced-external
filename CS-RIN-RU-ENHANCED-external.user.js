@@ -25,10 +25,11 @@ function addRinLinkToSteam() {
     const dlcPage = document.querySelector("div.game_area_bubble.game_area_dlc_bubble");
     const pageUrl = dlcPage?.querySelector("div > p > a")?.href ?? document.location.pathname;
 
+    const appName = document.querySelector("#appHubAppName").textContent;
     const regex = /\/app\/(\d+)\//;
     const appId = pageUrl.match(regex)[1];
     const developer = encodeURIComponent(document.querySelector("#developers_list").firstElementChild.textContent);
-    updatePage(appId, developer, rinButton, page);
+    updatePage(appId, appName, developer, rinButton, page);
 }
 
 addRinLinkToSteam();
@@ -39,12 +40,13 @@ function addRinLinkToSteamDB() {
     const page = "steamdb"
     const rinButton = addRinButton(page);
 
+    const appName = document.querySelector("h1").textContent;
     const firstEntry = document.querySelector('.span3');
     const appId = firstEntry.nextElementSibling.textContent;
     const developer = encodeURIComponent(firstEntry.parentElement
         .nextElementSibling.nextElementSibling
         .firstElementChild.nextElementSibling.textContent.replace(/\n/g, ""))
-    updatePage(appId, developer, rinButton, page)
+    updatePage(appId, appName, developer, rinButton, page)
 }
 
 addRinLinkToSteamDB();
@@ -56,10 +58,11 @@ function addRinLinkToPCGW() {
     const rinButton = addRinButton(page);
 
     const pageUrl = document.querySelector('.infobox-steamdb >  a').getAttribute("href");
+    const appName = document.querySelector("h1").textContent;
     const regex = /\/app\/(\d+)\//;
     const appId = pageUrl.match(regex)[1];
     const developer = encodeURIComponent(document.querySelector(".template-infobox-info").textContent);
-    updatePage(appId, developer, rinButton, page);
+    updatePage(appId, appName, developer, rinButton, page);
 }
 
 addRinLinkToPCGW();
@@ -101,15 +104,15 @@ function addRinButton(page) {
     return rinButton;
 }
 
-function updatePage(appId, developer, rinButton, page) {
-    getRinTopic(appId, developer, function (url, tags) {
+function updatePage(appId, appName, developer, rinButton, page) {
+    getRinTopic(appId, appName, developer, function (url, tags) {
         // Adds the cs.rin topic "href" attribute to the button
         addRinUrl(rinButton, url);
         addRinTags(tags, page);
     });
 }
 
-function getRinTopic(appId, developer, callback) {
+function getRinTopic(appId, appName, developer, callback) {
     const rinSearchUrl = `https://cs.rin.ru/forum/search.php?keywords=${appId}&fid%5B%5D=10&sr=topics&sf=firstpost`;
     console.log(rinSearchUrl);
     GM_xmlhttpRequest({
@@ -117,30 +120,30 @@ function getRinTopic(appId, developer, callback) {
             const doc = new DOMParser().parseFromString(response.responseText, "text/html");
             const topicSelectors = doc.querySelectorAll(".titles:not(:first-child), .topictitle");
             if (topicSelectors.length > 1) {
-                getRinTopicAdvanced(appId, developer, callback);
+                getRinTopicAdvanced(appId, appName, developer, callback);
             } else {
-                processResponse(response.responseText, callback, function () {
-                    getRinTopic(appId, developer, callback); // Retry getRinTopic if search fails
+                processResponse(appName, response.responseText, callback, function () {
+                    getRinTopic(appId, "", developer, callback); // Retry getRinTopic if search fails
                 });
             }
         }
     });
 }
 
-function getRinTopicAdvanced(appId, developer, callback) {
+function getRinTopicAdvanced(appId, appName, developer, callback) {
     const rinSearchUrl = `https://cs.rin.ru/forum/search.php?keywords=${appId}+${developer}&fid%5B%5D=10&sr=topics&sf=firstpost`;
     console.log(rinSearchUrl);
     GM_xmlhttpRequest({
         method: "GET", url: rinSearchUrl, onload: function (response) {
-            processResponse(response.responseText, callback, function () {
-                getRinTopicAdvanced(appId, developer, callback); // Retry getRinTopicAdvanced if search fails
+            processResponse(appName, response.responseText, callback, function () {
+                getRinTopicAdvanced(appId, appName, developer, callback); // Retry getRinTopicAdvanced if search fails
             });
         }
     });
 }
 
 let retryScheduled = false; // Flag to track if a retry is scheduled
-function processResponse(responseText, callback, retryFunction) {
+function processResponse(appName, responseText, callback, retryFunction) {
     if (retryScheduled) return; // If a retry is scheduled, don't do anything
 
     const doc = new DOMParser().parseFromString(responseText, "text/html");
@@ -158,7 +161,20 @@ function processResponse(responseText, callback, retryFunction) {
         return;
     }
 
-    const topicSelector = doc.querySelector(".titles:not(:first-child), .topictitle");
+    // Get all topics
+    const topics = doc.querySelectorAll(".titles:not(:first-child), .topictitle");
+    let topicSelector = null;
+    for (let potentialTopic of topics) {
+        if (potentialTopic.textContent.includes(appName)) {
+            topicSelector = potentialTopic;
+            break;
+        }
+    }
+    // Default to first topic
+    if (!topicSelector) {
+        topicSelector = doc.querySelector(".titles:not(:first-child), .topictitle");
+    }
+
     const rinURL = topicSelector ? topicSelector.getAttribute("href") : "posting.php?mode=post&f=10";
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
     const tags = topicSelector ? topicSelector.text.match(/(?<!^)\[([^\]]+)]/g)?.slice(0) ?? [] : ["[Not on RIN]"];
