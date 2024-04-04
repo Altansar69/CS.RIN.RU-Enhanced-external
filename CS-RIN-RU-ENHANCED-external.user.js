@@ -182,7 +182,7 @@ function processResponse(appName, responseText, callback, retryFunction) {
     const tags = topicSelector ? topicSelector.text.match(/(?<!^)\[([^\]]+)]/g)?.slice(0) ?? [] : ["[Not on RIN]"];
     /*
     if(tags.length===0) {
-        tags.push(""); //Insert default tag
+        tags.push("Cracked"); //Insert default tag
     }
     */
     if (callback && typeof callback === "function") {
