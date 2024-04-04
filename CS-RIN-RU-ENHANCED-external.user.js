@@ -2,11 +2,13 @@
 // @name            CS.RIN.RU Enhanced (External)
 // @name:fr         CS.RIN.RU Amélioré (Externe)
 // @name:pt         CS.RIN.RU Melhorado (Externo)
+// @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       Altansar
 // @version         1.1.5
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
+// @name:tr         CS.RIN.RU sitesini ilgilendiren her şey - Steam Underground Topluluğu ancak sitede faaliyet göstermemektedir.
 // @author          Altansar / Reddiepoint
 // @match           *://store.steampowered.com/app/*
 // @match           *://steamdb.info/app/*
