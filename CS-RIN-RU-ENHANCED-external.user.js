@@ -4,7 +4,7 @@
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       https://github.com/Altansar69/CS.RIN.RU-Enhanced-external
-// @version         1.1.6
+// @version         1.1.7
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
@@ -21,6 +21,9 @@
 // @downloadURL     https://raw.githubusercontent.com/Altansar69/CS.RIN.RU-Enhanced-external/master/CS-RIN-RU-ENHANCED-external.user.js
 // ==/UserScript==
 
+
+let defaultTag;
+//defaultTag = "Cracked (by default)"
 
 function addRinLinkToSteam() {
     if (!document.location.origin.match("store.steampowered.com")) return;
@@ -184,8 +187,8 @@ function processResponse(appName, responseText, callback, retryFunction) {
     const rinURL = topicSelector ? topicSelector.getAttribute("href") : "posting.php?mode=post&f=10";
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
     const tags = topicSelector ? topicSelector.text.match(/(?<!^)\[([^\]]+)]/g)?.slice(0) ?? [] : ["[Not on RIN]"];
-    if(tags.length===0) {
-        tags.push("Cracked (by default)"); //Insert default tag
+    if(tags.length===0 &&defaultTag!==undefined) {
+        tags.push(defaultTag); //Insert default tag
     }
     if (callback && typeof callback === "function") {
         callback(redirectUrl, tags);
