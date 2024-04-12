@@ -31,6 +31,7 @@ This project is following semantic versioning schema.
 ## 🤝 Credits
 - [Altansar69](https://github.com/Altansar69) - Has created the project
 - [Reddiepoint](https://github.com/Reddiepoint) - Project co-creator
+- [SubZeroPL](https://github.com/SubZeroPL) - Project co-creator
 
 ## 📄 License
 This software is under the Unlicense, terms of which are available in [UNLICENSE.txt](UNLICENSE.txt])
