@@ -4,7 +4,7 @@
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       https://github.com/Altansar69/CS.RIN.RU-Enhanced-external
-// @version         1.1.7
+// @version         1.1.8
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
@@ -13,6 +13,7 @@
 // @match           *://store.steampowered.com/app/*
 // @match           *://steamdb.info/app/*
 // @match           *://www.pcgamingwiki.com/wiki/*
+// @match           *://github.com/Altansar69/CS.RIN.RU-Enhanced-external*
 // @icon            https://i.ibb.co/p1k6cq6/image.png
 // @grant           GM_xmlhttpRequest
 // @homepageURL     https://github.com/Altansar69/CS.RIN.RU-Enhanced-external
@@ -25,8 +26,45 @@
 let defaultTag;
 //defaultTag = "Cracked (by default)"
 
+// const ASF_URL = "http://v-64:1242/Api/Bot/ASF/AddLicense"; // add some configuration window for this?
+const ASF_URL = "http://v-64:1242/Api/ASF";
+
+function addToAsf() {
+    if (!isSteam()) return;
+
+    const playGameBtn = document.querySelector("div#freeGameBtn");
+    if (playGameBtn == null) return;
+
+    const appId = getAppId(document.location.href);
+
+    const addToLibBtn = document.querySelector("div.btn_addtocart span.btn_blue_steamui").parentElement;
+    if (addToLibBtn) {
+        const addToAsfBtn = addToLibBtn.cloneNode(true);
+        const btn = addToAsfBtn.children[0];
+        btn.children[0].innerHTML = "Add in ASF";
+        const attr = btn.getAttribute("onclick");
+        const regex = /AddFreeLicense\(\s+(\d+),.+/;
+        const subId = attr.match(regex)[1];
+        btn.removeAttribute("onclick");
+        const request = `{"Apps": [${appId}], "Packages": [${subId}]}`;
+        btn.addEventListener("click", (event) => {
+            console.log(`url: ${ASF_URL}, appId: ${appId}, subId: ${subId}, body: ${request}`);
+            GM_xmlhttpRequest({
+                method: "GET", url: ASF_URL, responseType: "json", //data: request,
+                onload: (response) => { console.log(response); },
+                onerror: (response) => { console.log(response); }
+            });
+        });
+        addToLibBtn.after(addToAsfBtn);
+    } else {
+        console.log("User not logged in to Steam");
+    }
+}
+
+addToAsf();
+
 function addRinLinkToSteam() {
-    if (!document.location.origin.match("store.steampowered.com")) return;
+    if (!isSteam()) return;
 
     const page = "steam"
     const rinButton = addRinButton(page);
@@ -35,8 +73,7 @@ function addRinLinkToSteam() {
     const pageUrl = dlcPage?.querySelector("div > p > a")?.href ?? document.location.pathname;
 
     const appName = document.querySelector("#appHubAppName").textContent;
-    const regex = /\/app\/(\d+)\//;
-    const appId = pageUrl.match(regex)[1];
+    const appId = getAppId(pageUrl);
     const developer = encodeURIComponent(document.querySelector("#developers_list").firstElementChild.textContent);
     updatePage(appId, appName, developer, rinButton, page);
 }
@@ -187,7 +224,7 @@ function processResponse(appName, responseText, callback, retryFunction) {
     const rinURL = topicSelector ? topicSelector.getAttribute("href") : "posting.php?mode=post&f=10";
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
     const tags = topicSelector ? topicSelector.text.match(/(?<!^)\[([^\]]+)]/g)?.slice(0) ?? [] : ["[Not on RIN]"];
-    if(tags.length===0 &&defaultTag!==undefined) {
+    if (tags.length === 0 && defaultTag !== undefined) {
         tags.push(defaultTag); //Insert default tag
     }
     if (callback && typeof callback === "function") {
@@ -233,7 +270,6 @@ function hexToRgb(hex) {
     return [parseInt(hex.substring(0, 2), 16), parseInt(hex.substring(2, 4), 16), parseInt(hex.substring(4, 6), 16)];
 }
 
-
 function colorize(str, parentElem) {
     let lstr = str.toLowerCase();
     let hash = 0;
@@ -257,4 +293,14 @@ function colorize(str, parentElem) {
     }
 
     return '#' + color.padStart(6, '0');
+}
+
+function isSteam() {
+    return document.location.origin.match("store.steampowered.com");
+}
+
+function getAppId(url) {
+    const regex = /\/app\/(\d+)\//;
+    const appId = url.match(regex)[1];
+    return appId;
 }
