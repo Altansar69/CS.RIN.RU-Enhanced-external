@@ -132,7 +132,7 @@ function getRinTopic(appId, appName, developer, callback) {
                 getRinTopicAdvanced(appId, appName, developer, callback);
             } else {
                 processResponse(appName, response.responseText, callback, function () {
-                    getRinTopic(appId, "", developer, callback); // Retry getRinTopic if search fails
+                    //getRinTopic(appId, "", developer, callback); // Retry getRinTopic if search fails
                 });
             }
         }
@@ -145,7 +145,7 @@ function getRinTopicAdvanced(appId, appName, developer, callback) {
     GM_xmlhttpRequest({
         method: "GET", url: rinSearchUrl, onload: function (response) {
             processResponse(appName, response.responseText, callback, function () {
-                getRinTopicAdvanced(appId, appName, developer, callback); // Retry getRinTopicAdvanced if search fails
+                //getRinTopicAdvanced(appId, appName, developer, callback); // Retry getRinTopicAdvanced if search fails
             });
         }
     });
