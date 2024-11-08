@@ -4,7 +4,7 @@
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       https://github.com/Altansar69/CS.RIN.RU-Enhanced-external
-// @version         1.1.8
+// @version         1.1.9
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
@@ -124,15 +124,20 @@ function updatePage(appId, appName, developer, rinButton, page) {
 function getRinTopic(appId, appName, developer, callback) {
     const rinSearchUrl = `https://cs.rin.ru/forum/search.php?keywords=${appId}&fid%5B%5D=10&sr=topics&sf=firstpost`;
     console.log(rinSearchUrl);
+    console.log("Trying...");
     GM_xmlhttpRequest({
-        method: "GET", url: rinSearchUrl, onload: function (response) {
+        method: "GET", url: rinSearchUrl,
+        onerror: function (error) {
+            console.log(error)
+        },
+        onload: function (response) {
             const doc = new DOMParser().parseFromString(response.responseText, "text/html");
             const topicSelectors = doc.querySelectorAll(".titles:not(:first-child), .topictitle");
             if (topicSelectors.length > 1) {
                 getRinTopicAdvanced(appId, appName, developer, callback);
             } else {
-                processResponse(appName, response.responseText, callback, function () {
-                    //getRinTopic(appId, "", developer, callback); // Retry getRinTopic if search fails
+                processResponse(appName, response.responseText, rinSearchUrl, callback, function () {
+                    getRinTopic(appId, "", developer, callback); // Retry getRinTopic if search fails
                 });
             }
         }
@@ -143,17 +148,30 @@ function getRinTopicAdvanced(appId, appName, developer, callback) {
     const rinSearchUrl = `https://cs.rin.ru/forum/search.php?keywords=${appId}+${developer}&fid%5B%5D=10&sr=topics&sf=firstpost`;
     console.log(rinSearchUrl);
     GM_xmlhttpRequest({
-        method: "GET", url: rinSearchUrl, onload: function (response) {
-            processResponse(appName, response.responseText, callback, function () {
-                //getRinTopicAdvanced(appId, appName, developer, callback); // Retry getRinTopicAdvanced if search fails
+        method: "GET", url: rinSearchUrl,
+        onerror: function (error) {
+            console.log(error)
+        },
+        onload: function (response) {
+            processResponse(appName, response.responseText, rinSearchUrl, callback, function () {
+                getRinTopicAdvanced(appId, appName, developer, callback); // Retry getRinTopicAdvanced if search fails
             });
         }
     });
 }
 
 let retryScheduled = false; // Flag to track if a retry is scheduled
-function processResponse(appName, responseText, callback, retryFunction) {
+let retryAttempts = 0; // Counter for retry attempts
+const maxRetryAttempts = 1; // Maximum number of retry attempts
+function processResponse(appName, responseText, url, callback, retryFunction) {
     if (retryScheduled) return; // If a retry is scheduled, don't do anything
+
+    if (retryAttempts >= maxRetryAttempts) {
+        console.log("Max retry attempts reached");
+        callback(url, []); // Redirect to search page
+        return;
+    }
+    retryAttempts++;
 
     const doc = new DOMParser().parseFromString(responseText, "text/html");
 
@@ -165,7 +183,7 @@ function processResponse(appName, responseText, callback, retryFunction) {
             setTimeout(() => {
                 retryScheduled = false; // Reset the flag when the retry function is called
                 retryFunction(); // Call the retryFunction, whichever function called this function
-            }, 200);
+            }, 2000);
         }
         return;
     }
@@ -190,6 +208,7 @@ function processResponse(appName, responseText, callback, retryFunction) {
     if(tags.length===0 &&defaultTag!==undefined) {
         tags.push(defaultTag); //Insert default tag
     }
+
     if (callback && typeof callback === "function") {
         callback(redirectUrl, tags);
     }
