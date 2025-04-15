@@ -103,9 +103,7 @@ function addRinLinkToGGDeals() {
         },
         onload: function (response) {
             const appId = getAppIdFromUrl(response.finalUrl);
-            if (!appId) {
-                console.log(`Could not parse appid from url ${ggUrl}`);
-            }
+            if (!appId) return;
             getRinTopic(appId, gameName, developer, (url) => link.href = url);
         }
     });
