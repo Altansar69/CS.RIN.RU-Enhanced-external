@@ -40,8 +40,8 @@ function addRinLinkToSteam() {
     const pageUrl = dlcPage?.querySelector("div > p > a")?.href ?? document.location.pathname;
 
     const appName = document.querySelector("#appHubAppName").textContent;
-    const regex = /\/app\/(\d+)\//;
-    const appId = pageUrl.match(regex)[1];
+    const appId = getAppIdFromUrl(pageUrl);
+    if (!appId) return;
     const developer = encodeURIComponent(document.querySelector("#developers_list").firstElementChild.textContent);
     updatePage(appId, appName, developer, rinButton, page);
 }
@@ -338,7 +338,7 @@ function getAppIdFromUrl(url) {
     const matches = url.match(regex);
     if (matches == null || matches[1] == null) {
         console.log(`Error getting AppId from URL ${url}`);
-        return null;
+        return;
     }
-    return appId;
+    return matches[1];
 }
