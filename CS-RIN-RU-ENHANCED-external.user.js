@@ -27,7 +27,7 @@ let defaultTag;
 //defaultTag = "Cracked (by default)"
 
 // const ASF_URL = "http://v-64:1242/Api/Bot/ASF/AddLicense"; // add some configuration window for this?
-const ASF_URL = "http://v-64:1242/Api/ASF";
+const ASF_URL = "http://asf.docker.lan/Api/ASF";
 
 function addToAsf() {
     if (!isSteam()) return;
