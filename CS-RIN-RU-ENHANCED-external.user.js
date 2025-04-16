@@ -104,7 +104,7 @@ function addRinLinkToGGDeals() {
         onload: function (response) {
             const appId = getAppIdFromUrl(response.finalUrl);
             if (!appId) return;
-            getRinTopic(appId, gameName, developer, (url) => link.href = url);
+            updatePage(appId, gameName, developer, link, 'ggdeals');
         }
     });
 
@@ -254,7 +254,7 @@ function processResponse(appName, responseText, url, callback, retryFunction) {
     const rinURL = topicSelector ? topicSelector.getAttribute("href") : "posting.php?mode=post&f=10";
     const redirectUrl = "https://cs.rin.ru/forum/" + rinURL.split("&hilit")[0];
     const tags = topicSelector ? topicSelector.text.match(/(?<!^)\[([^\]]+)]/g)?.slice(0) ?? [] : ["[Not on RIN]"];
-    if(tags.length===0 &&defaultTag!==undefined) {
+    if (tags.length === 0 && defaultTag !== undefined) {
         tags.push(defaultTag); //Insert default tag
     }
 
@@ -276,7 +276,8 @@ function addRinTags(tags, page) {
     const titleLocations = {
         "steam": () => document.getElementById("appHubAppName"),
         "steamdb": () => document.querySelector('[itemprop="name"]'),
-        "PCGW": () => document.getElementsByClassName("article-title")[0]
+        "PCGW": () => document.getElementsByClassName("article-title")[0],
+        "ggdeals": () => document.querySelector("div.game-heading h1")
     };
 
     // const titleElem = (tagFunctions[page] || (() => null))(tags);
