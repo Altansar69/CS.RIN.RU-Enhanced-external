@@ -113,7 +113,6 @@ addRinLinkToGGDeals();
 function addRinButton(page) {
     let rinButton = document.createElement("a");
     const spanElement = document.createElement("span");
-    spanElement.dataset.tooltipText = RIN_LABEL;
     const imgElement = document.createElement("img");
     imgElement.className = "ico16";
     imgElement.setAttribute("src", RIN_IMAGE);
@@ -123,6 +122,7 @@ function addRinButton(page) {
     if (page === "steam") {
         rinButton.className = "btnv6_blue_hoverfade btn_medium";
         rinButton.style.marginRight = "0.28em"
+        spanElement.dataset.tooltipText = RIN_LABEL;
     }
 
     // Add text for RIN button on SteamDB
@@ -137,6 +137,7 @@ function addRinButton(page) {
     // Make sure the button has the same size as the other buttons
     if (page === "PCGW") {
         rinButton.className = "svg-icon template-infobox-icon";
+        rinButton.title = RIN_LABEL
     }
 
     // Add button without image
