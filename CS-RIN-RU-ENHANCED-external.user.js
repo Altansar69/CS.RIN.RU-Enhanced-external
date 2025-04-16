@@ -112,7 +112,6 @@ addRinLinkToGGDeals();
 
 function addRinButton(page) {
     let rinButton = document.createElement("a");
-    rinButton.className = "btnv6_blue_hoverfade btn_medium";
     const spanElement = document.createElement("span");
     spanElement.dataset.tooltipText = RIN_LABEL;
     const imgElement = document.createElement("img");
@@ -122,6 +121,7 @@ function addRinButton(page) {
 
     // Add spacing
     if (page === "steam") {
+        rinButton.className = "btnv6_blue_hoverfade btn_medium";
         rinButton.style.marginRight = "0.28em"
     }
 
