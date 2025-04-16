@@ -128,7 +128,7 @@ function addRinButton(page) {
     // Add text for RIN button on SteamDB
     if (page === "steamdb") {
         rinButton.className = "tooltipped tooltipped-n";
-        rinButton.ariaLabel = RIN_LABEL
+        rinButton.ariaLabel = RIN_LABEL;
         imgElement.style.height = "16px";
         imgElement.style.width = "16px";
         spanElement.append(" CS.RIN.RU");
@@ -137,13 +137,14 @@ function addRinButton(page) {
     // Make sure the button has the same size as the other buttons
     if (page === "PCGW") {
         rinButton.className = "svg-icon template-infobox-icon";
-        rinButton.title = RIN_LABEL
+        rinButton.title = RIN_LABEL;
     }
 
     // Add button without image
     if (page === "ggdeals") {
         imgElement.style.height = "0px"; // No image
         imgElement.style.width = "0px";
+        rinButton.title = RIN_LABEL;
         rinButton.className = "game-link-widget";
         rinButton.style.left = "130px" // Offset the button to the left so it does not overlap with the existing one
         spanElement.append("View on CS.RIN.RU");
