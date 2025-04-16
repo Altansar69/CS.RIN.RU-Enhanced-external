@@ -127,6 +127,8 @@ function addRinButton(page) {
 
     // Add text for RIN button on SteamDB
     if (page === "steamdb") {
+        rinButton.className = "tooltipped tooltipped-n";
+        rinButton.ariaLabel = RIN_LABEL
         imgElement.style.height = "16px";
         imgElement.style.width = "16px";
         spanElement.append(" CS.RIN.RU");
