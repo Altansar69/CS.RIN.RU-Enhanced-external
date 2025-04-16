@@ -85,16 +85,15 @@ function addRinLinkToGGDeals() {
     if (!document.location.origin.match("gg.deals")) return;
 
     const gameName = document.querySelector("li[itemprop='itemListElement']:last-child").innerText.trim();
-    const developerItem = Array.from(document.querySelectorAll("div.game-info-details-section.text-details")).filter((v) => { return v.innerText.includes('Developer') })[0];
+    const developerItem = Array.from(document.querySelectorAll("div.game-info-details-section.text-details")).filter((v) => {
+        return v.innerText.includes('Developer')
+    })[0];
     const developer = developerItem.querySelector("p").innerText;
+    const ggUrl = document.querySelector("a.game-link-widget").href;
 
-    const container = document.querySelector("div.game-info-image");
-    const anchor = document.querySelector('a.game-link-widget');
-    const link = document.createElement("a");
-    const label = document.createElement("span");
-    const text = document.createElement("span");
+    const rinButton = addRinButton("ggdeals");
+    rinButton.href = "https://cs.rin.ru/forum";
 
-    const ggUrl = anchor.href;
     GM_xmlhttpRequest({
         method: "GET",
         url: ggUrl,
@@ -104,38 +103,27 @@ function addRinLinkToGGDeals() {
         onload: function (response) {
             const appId = getAppIdFromUrl(response.finalUrl);
             if (!appId) return;
-            updatePage(appId, gameName, developer, link, 'ggdeals');
+            updatePage(appId, gameName, developer, rinButton, "ggdeals");
         }
     });
-
-    link.className = "game-link-widget";
-    link.target = "_blank";
-    link.href = "https://cs.rin.ru/forum";
-    link.style.left = '130px';
-    link.ariaLabel = RIN_LABEL;
-
-    label.className = "link-label";
-
-    text.className = "game-header-store-link badge badge-big";
-    text.innerText = RIN_LABEL;
-    label.appendChild(text);
-    link.appendChild(label);
-    container.appendChild(link);
-    container.insertBefore(link, anchor);
 }
 
 addRinLinkToGGDeals();
 
 function addRinButton(page) {
-    const rinButton = document.createElement("a");
+    let rinButton = document.createElement("a");
     rinButton.className = "btnv6_blue_hoverfade btn_medium";
-    rinButton.style.marginLeft = "0.280em";
     const spanElement = document.createElement("span");
     spanElement.dataset.tooltipText = RIN_LABEL;
     const imgElement = document.createElement("img");
     imgElement.className = "ico16";
     imgElement.setAttribute("src", RIN_IMAGE);
     spanElement.appendChild(imgElement);
+
+    // Add spacing
+    if (page === "steam") {
+        rinButton.style.marginRight = "0.28em"
+    }
 
     // Add text for RIN button on SteamDB
     if (page === "steamdb") {
@@ -149,15 +137,27 @@ function addRinButton(page) {
         rinButton.className = "svg-icon template-infobox-icon";
     }
 
+    // Add button without image
+    if (page === "ggdeals") {
+        imgElement.style.height = "0px"; // No image
+        imgElement.style.width = "0px";
+        rinButton.className = "game-link-widget";
+        rinButton.style.left = "130px" // Offset the button to the left so it does not overlap with the existing one
+        spanElement.append("View on CS.RIN.RU");
+        spanElement.className = "game-header-store-link badge badge-big";
+    }
+
     rinButton.append(spanElement);
 
     const siteSelectors = {
-        "steam": () => document.querySelector('.apphub_OtherSiteInfo'),
-        "steamdb": () => document.querySelectorAll('.app-links')[1],
-        "PCGW": () => document.querySelectorAll('.template-infobox-icons')[0]
+        "steam": () => document.querySelector('.apphub_OtherSiteInfo').firstElementChild,
+        "steamdb": () => document.querySelectorAll('.app-links')[1].firstElementChild,
+        "PCGW": () => document.querySelectorAll('.template-infobox-icons')[0].firstElementChild,
+        "ggdeals": () => document.querySelector("a.game-link-widget") // Button will be added to the right of the existing button
     };
     const otherSiteInfo = (siteSelectors[page] || (() => null))();
-    otherSiteInfo.insertBefore(rinButton, otherSiteInfo.firstChild);
+    // otherSiteInfo.insertBefore(rinButton, otherSiteInfo.firstChild);
+    otherSiteInfo.insertAdjacentElement("beforebegin", rinButton);
 
     return rinButton;
 }
@@ -329,7 +329,7 @@ function colorize(str, parentElem) {
 
 /**
  * Returns AppId parsed from Url passed as an argument
- * @param {string} url 
+ * @param {string} url
  * @returns AppId
  */
 function getAppIdFromUrl(url) {
