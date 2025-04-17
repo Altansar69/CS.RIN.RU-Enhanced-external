@@ -6,10 +6,11 @@ Extension of [CS RIN RU Enhanced mod](https://github.com/SubZeroPL/cs-rin-ru-enh
 Official forum topic: https://cs.rin.ru/forum/viewtopic.php?f=14&t=75717
 
 ## 🔧 Features
-- On a game's Steam page, a button has been added to take you to the game's cs.rin page.
-- On a game's Steam page, its tags (cs.rin) are displayed in its title ([CRACKED] [UNCRACKED] etc...).
-- On a game's SteamDB page, a button has been added to take you to the game's cs.rin page.
-- On a game's SteamDB page, its tags (cs.rin) are displayed in its title ([CRACKED] [UNCRACKED] etc...).
+- On a game's [Steam](https://store.steampowered.com) page, a button has been added to take you to the game's cs.rin page.
+- On a game's [Steam](https://store.steampowered.com) page, its tags (cs.rin) are displayed in its title ([CRACKED] [UNCRACKED] etc...).
+- On a game's [SteamDB](https://steamdb.info) page, a button has been added to take you to the game's cs.rin page.
+- On a game's [SteamDB](https://steamdb.info) page, its tags (cs.rin) are displayed in its title ([CRACKED] [UNCRACKED] etc...).
+- On a game's [GG.Deals](https://gg.deals) page, a button has been added to take you to the game's cs.rin page (works only for base game, not for special editions/bundles/packs etc.).
 
 ## 🧑‍🤝‍🧑 Other related projects
 - [CS RIN RU Enhanced mod](https://github.com/SubZeroPL/cs-rin-ru-enhanced-mod) - Main project
