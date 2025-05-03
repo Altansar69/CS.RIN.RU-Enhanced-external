@@ -4,7 +4,7 @@
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       https://github.com/Altansar69/CS.RIN.RU-Enhanced-external
-// @version         1.1.10
+// @version         1.1.11
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
@@ -186,8 +186,14 @@ function getRinTopic(appId, appName, developer, callback) {
         onload: function (response) {
             const doc = new DOMParser().parseFromString(response.responseText, "text/html");
             const topicSelectors = doc.querySelectorAll(".titles:not(:first-child), .topictitle");
+            const securityCheck = doc.querySelector("p"); // "Security check, please wait..." text element if it exists
             if (topicSelectors.length > 1) {
                 getRinTopicAdvanced(appId, appName, developer, callback);
+            } else if (securityCheck && securityCheck.textContent.includes("Security check")) {
+                retryAttempts = maxRetryAttempts; // Fail immediately
+                processResponse(appName, response.responseText, rinSearchUrl, callback, function () {
+                    getRinTopic(appId, "", developer, callback); // Returns search link immediately
+                });
             } else {
                 processResponse(appName, response.responseText, rinSearchUrl, callback, function () {
                     getRinTopic(appId, "", developer, callback); // Retry getRinTopic if search fails
