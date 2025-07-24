@@ -4,7 +4,7 @@
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       https://github.com/Altansar69/CS.RIN.RU-Enhanced-external
-// @version         1.1.11
+// @version         1.1.12
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  W.I.P.
@@ -127,7 +127,7 @@ function addRinButton(page) {
 
     // Add text for RIN button on SteamDB
     if (page === "steamdb") {
-        rinButton.className = "tooltipped tooltipped-n";
+        rinButton.className = "btn tooltipped tooltipped-n";
         rinButton.ariaLabel = RIN_LABEL;
         imgElement.style.height = "16px";
         imgElement.style.width = "16px";
