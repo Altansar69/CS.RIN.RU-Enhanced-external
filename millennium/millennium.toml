@@ -1,0 +1,17 @@
+[plugin]
+id = "com.altansar69.csrinru-enhanced-external"
+name = "CS.RIN.RU Enhanced (External)"
+version = "2.0.0"
+author = "Altansar69"
+description = "Adds a direct CS.RIN.RU AppID link to Steam store pages."
+
+[webkit]
+entry = "webview/preload.ts"
+
+[compiler]
+output_path = "auto"
+
+[dev]
+auto_restart = true
+reload_steamui_when = "frontend"
+
