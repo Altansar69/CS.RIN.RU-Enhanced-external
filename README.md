@@ -9,7 +9,7 @@ Official forum topic: https://cs.rin.ru/forum/viewtopic.php?f=14&t=75717
 - Adds a CS.RIN.RU link to game pages on [Steam](https://store.steampowered.com), [SteamDB](https://steamdb.info), [PCGamingWiki](https://www.pcgamingwiki.com), [GG.Deals](https://gg.deals), [IsThereAnyDeal](https://isthereanydeal.com), and [IGDB](https://www.igdb.com).
 - Uses the exact Steam AppID route (`https://cs.rin.ru/app/{appid}`), avoiding approximate forum searches and ambiguous results.
 - Displays the tags from the matching CS.RIN.RU topic in the page title when they can be retrieved (`[CRACKED]`, `[UNCRACKED]`, etc.). Brackets that are part of the game's actual title are preserved and are not treated as forum tags.
-- A separate [Millennium plugin](https://cs.rin.ru/forum/viewtopic.php?f=20&t=156500) provides the same integration inside Steam's desktop client.
+- A separate companion [Millennium](https://steambrew.app/) plugin provides the same integration inside Steam's desktop client.
 
 GG.Deals support is limited to base games for which a Steam AppID can be found; special editions, bundles, and packs may not have one.
 
