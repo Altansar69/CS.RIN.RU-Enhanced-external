@@ -9,7 +9,7 @@ Official forum topic: https://cs.rin.ru/forum/viewtopic.php?f=14&t=75717
 - Adds a CS.RIN.RU link to game pages on [Steam](https://store.steampowered.com), [SteamDB](https://steamdb.info), [PCGamingWiki](https://www.pcgamingwiki.com), [GG.Deals](https://gg.deals), [IsThereAnyDeal](https://isthereanydeal.com), and [IGDB](https://www.igdb.com).
 - Uses the exact Steam AppID route (`https://cs.rin.ru/app/{appid}`), avoiding approximate forum searches and ambiguous results.
 - Displays the tags from the matching CS.RIN.RU topic in the page title when they can be retrieved (`[CRACKED]`, `[UNCRACKED]`, etc.). Brackets that are part of the game's actual title are preserved and are not treated as forum tags.
-- Includes a [Millennium Steam Homebrew](https://steambrew.app/) plugin for Steam's built-in store browser.
+- A separate [Millennium plugin](https://cs.rin.ru/forum/viewtopic.php?f=20&t=156500) provides the same integration inside Steam's desktop client.
 
 GG.Deals support is limited to base games for which a Steam AppID can be found; special editions, bundles, and packs may not have one.
 
@@ -26,17 +26,6 @@ see: [issues](https://github.com/Altansar69/CS.RIN.RU-Enhanced-external/issues)
 **Notes:** The script supports automatic updates, which means you don't have to download it again each time it's updated.
 
 *Developed & tested with [Violentmonkey](https://violentmonkey.github.io/) and [Tampermonkey](https://www.tampermonkey.net/) on [Firefox](https://www.mozilla.org/) and Chromium ([Brave](https://brave.com/)).*
-
-## 🏠 Millennium Steam Homebrew
-
-The `millennium/` directory contains a native Millennium 3.4+ plugin that adds the same direct CS.RIN.RU AppID link to Steam store pages opened inside the desktop client.
-
-To build and install it for development:
-
-1. Install [Millennium](https://steambrew.app/) and [Bun](https://bun.sh/).
-2. Open a terminal in the `millennium/` directory.
-3. Run `bun install`, then `bun run build`.
-4. Enable **CS.RIN.RU Enhanced (External)** in Millennium's plugin settings and restart Steam if requested.
 
 ## 🔢 Versioning
 This project is following semantic versioning schema.
