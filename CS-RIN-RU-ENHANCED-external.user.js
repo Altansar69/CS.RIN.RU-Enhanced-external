@@ -4,7 +4,7 @@
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       https://github.com/Altansar69/CS.RIN.RU-Enhanced-external
-// @version         2.0.4
+// @version         2.0.5
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  Tudo o que diz respeito ao CS.RIN.RU - Steam Underground Community mas não age no site.
@@ -133,7 +133,7 @@ function addRinLinkToIsThereAnyDeal() {
 }
 
 if (typeof document !== "undefined" && document.location.hostname === "isthereanydeal.com") {
-    addWhenReady(addRinLinkToIsThereAnyDeal);
+    addWhenReady(addRinLinkToIsThereAnyDeal, 30000, true);
 }
 
 function addRinLinkToIGDB() {
@@ -155,19 +155,25 @@ if (typeof document !== "undefined" && document.location.hostname === "www.igdb.
     addWhenReady(addRinLinkToIGDB);
 }
 
-function addWhenReady(addLink, timeout = 30000) {
-    if (addLink()) return null;
+function addWhenReady(addLink, timeout = 30000, keepWatching = false) {
+    const added = addLink();
+    if (added && !keepWatching) return null;
     if (typeof MutationObserver === "undefined" || !document.documentElement) return null;
 
     let timeoutId;
-    const observer = new MutationObserver(() => {
-        if (!addLink()) return;
-        observer.disconnect();
+    let observer;
+    const stop = () => {
+        observer?.disconnect();
         clearTimeout(timeoutId);
+    };
+    observer = new MutationObserver(() => {
+        const addedAfterMutation = addLink();
+        if (!addedAfterMutation || keepWatching) return;
+        stop();
     });
     observer.observe(document.documentElement, { childList: true, subtree: true });
-    timeoutId = setTimeout(() => observer.disconnect(), timeout);
-    return observer;
+    timeoutId = setTimeout(stop, timeout);
+    return { disconnect: stop };
 }
 
 function addNativeExternalLink(referenceLink, marker) {

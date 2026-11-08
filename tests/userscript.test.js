@@ -92,6 +92,25 @@ test("adds a native direct AppID link on IsThereAnyDeal", (t) => {
     assert.match(document.querySelector("h1").textContent, /\[Cracked\]/);
 });
 
+test("restores the IsThereAnyDeal link when hydration removes it", async (t) => {
+    const document = useDom(t, `
+        <h1>Valheim</h1>
+        <a href="https://store.steampowered.com/app/892970/">Steam reviews</a>
+        <div class="links external"><ul><li><a class="link" href="https://steamdb.info/app/892970/"><i><img alt="SteamDB"></i> SteamDB</a></li></ul></div>
+    `, "https://isthereanydeal.com/game/valheim/info/");
+
+    const watcher = addWhenReady(addRinLinkToIsThereAnyDeal, 1000, true);
+    const firstLink = document.querySelector('[data-csrin-link="itad"]');
+    assert.ok(firstLink);
+    firstLink.closest("li").remove();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const restoredLinks = document.querySelectorAll('[data-csrin-link="itad"]');
+    assert.equal(restoredLinks.length, 1);
+    assert.equal(restoredLinks[0].href, "https://cs.rin.ru/app/892970");
+    watcher.disconnect();
+});
+
 test("adds a site-native direct AppID link on IGDB", (t) => {
     const document = useDom(t, `
         <h1>Example Game</h1>
