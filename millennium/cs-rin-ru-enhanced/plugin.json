@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/SteamClientHomebrew/Millennium/main/src/sys/plugin-schema.json",
+  "name": "cs-rin-ru-enhanced",
+  "common_name": "CS.RIN.RU Enhanced",
+  "description": "Adds a CS.RIN.RU button and topic tags on Steam store pages (port of the CS.RIN.RU Enhanced (External) userscript).",
+  "version": "2.0.0",
+  "backendType": "lua"
+}
+
+
