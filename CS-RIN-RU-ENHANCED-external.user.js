@@ -4,7 +4,7 @@
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       https://github.com/Altansar69/CS.RIN.RU-Enhanced-external
-// @version         2.0.0
+// @version         2.0.1
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  Tudo o que diz respeito ao CS.RIN.RU - Steam Underground Community mas não age no site.
@@ -117,35 +117,60 @@ function addRinLinkToGGDeals() {
 if (typeof document !== "undefined") addRinLinkToGGDeals();
 
 function addRinLinkToIsThereAnyDeal() {
-    if (document.location.hostname !== "isthereanydeal.com") return;
+    if (document.location.hostname !== "isthereanydeal.com") return false;
+    if (document.querySelector('[data-csrin-link="itad"]')) return true;
 
     const steamLink = document.querySelector("a[href*='store.steampowered.com/app/']");
+    if (!steamLink) return false;
     const appId = getAppIdFromUrl(steamLink?.href ?? "");
     const appName = document.querySelector("h1")?.textContent.trim();
     const referenceLink = document.querySelector("a[href*='steamdb.info/app/']") ?? steamLink;
-    if (!appId || !appName || !referenceLink) return;
+    if (!appId || !appName || !referenceLink) return false;
 
-    const rinButton = addNativeExternalLink(referenceLink);
+    const rinButton = addNativeExternalLink(referenceLink, "itad");
     updatePage(appId, appName, rinButton, "itad");
+    return true;
 }
 
-if (typeof document !== "undefined") addRinLinkToIsThereAnyDeal();
+if (typeof document !== "undefined" && document.location.hostname === "isthereanydeal.com") {
+    addWhenReady(addRinLinkToIsThereAnyDeal);
+}
 
 function addRinLinkToIGDB() {
-    if (document.location.hostname !== "www.igdb.com") return;
+    if (document.location.hostname !== "www.igdb.com") return false;
+    if (document.querySelector('[data-csrin-link="igdb"]')) return true;
 
     const steamLink = document.querySelector("a[href*='store.steampowered.com/app/']");
+    if (!steamLink) return false;
     const appId = getAppIdFromUrl(steamLink?.href ?? "");
     const appName = document.querySelector("h1")?.textContent.trim();
-    if (!appId || !appName || !steamLink) return;
+    if (!appId || !appName || !steamLink) return false;
 
-    const rinButton = addNativeExternalLink(steamLink);
+    const rinButton = addNativeExternalLink(steamLink, "igdb");
     updatePage(appId, appName, rinButton, "igdb");
+    return true;
 }
 
-if (typeof document !== "undefined") addRinLinkToIGDB();
+if (typeof document !== "undefined" && document.location.hostname === "www.igdb.com") {
+    addWhenReady(addRinLinkToIGDB);
+}
 
-function addNativeExternalLink(referenceLink) {
+function addWhenReady(addLink, timeout = 30000) {
+    if (addLink()) return null;
+    if (typeof MutationObserver === "undefined" || !document.documentElement) return null;
+
+    let timeoutId;
+    const observer = new MutationObserver(() => {
+        if (!addLink()) return;
+        observer.disconnect();
+        clearTimeout(timeoutId);
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    timeoutId = setTimeout(() => observer.disconnect(), timeout);
+    return observer;
+}
+
+function addNativeExternalLink(referenceLink, marker) {
     const referenceContainer = referenceLink.closest("li") ?? referenceLink;
     const clonedContainer = referenceContainer.cloneNode(true);
     const rinButton = clonedContainer.matches("a") ? clonedContainer : clonedContainer.querySelector("a");
@@ -154,6 +179,7 @@ function addNativeExternalLink(referenceLink) {
     rinButton.title = RIN_LABEL;
     rinButton.target = "_blank";
     rinButton.rel = "noopener noreferrer";
+    if (marker) rinButton.dataset.csrinLink = marker;
 
     const icon = rinButton.querySelector("img, svg");
     const rinIcon = document.createElement("img");
@@ -431,6 +457,7 @@ if (typeof module !== "undefined") {
         addNativeExternalLink,
         addRinLinkToIGDB,
         addRinLinkToIsThereAnyDeal,
+        addWhenReady,
         extractRinTags,
         findRinTopicTitle,
         getAppIdFromUrl,

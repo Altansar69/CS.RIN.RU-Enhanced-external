@@ -5,6 +5,7 @@ const { JSDOM } = require("jsdom");
 const {
     addRinLinkToIGDB,
     addRinLinkToIsThereAnyDeal,
+    addWhenReady,
     extractRinTags,
     findRinTopicTitle,
     getAppIdFromUrl,
@@ -20,6 +21,7 @@ function useDom(t, html, url) {
     global.NodeFilter = dom.window.NodeFilter;
     global.DOMParser = dom.window.DOMParser;
     global.getComputedStyle = dom.window.getComputedStyle;
+    global.MutationObserver = dom.window.MutationObserver;
     global.GM_xmlhttpRequest = ({ onload }) => onload({
         responseText: '<div id="pageheader"><a class="titles" href="./viewtopic.php?t=1">Example Game [Cracked]</a></div>'
     });
@@ -30,6 +32,7 @@ function useDom(t, html, url) {
         delete global.NodeFilter;
         delete global.DOMParser;
         delete global.getComputedStyle;
+        delete global.MutationObserver;
         delete global.GM_xmlhttpRequest;
     });
     return dom.window.document;
@@ -101,4 +104,22 @@ test("adds a site-native direct AppID link on IGDB", (t) => {
     assert.ok(link);
     assert.equal(link.className, "external-link");
     assert.match(link.textContent, /CS\.RIN\.RU/);
+});
+
+test("waits for IGDB to render its Steam link", async (t) => {
+    const document = useDom(t, `
+        <h1>Valheim</h1>
+        <ul id="links"></ul>
+    `, "https://www.igdb.com/games/valheim");
+
+    addWhenReady(addRinLinkToIGDB, 1000);
+    document.querySelector("#links").insertAdjacentHTML(
+        "beforeend",
+        '<li><a class="external-link" href="https://store.steampowered.com/app/892970">Steam</a></li>'
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const links = document.querySelectorAll('a[href="https://cs.rin.ru/app/892970"]');
+    assert.equal(links.length, 1);
+    assert.equal(links[0].dataset.csrinLink, "igdb");
 });
