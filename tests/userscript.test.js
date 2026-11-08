@@ -103,7 +103,9 @@ test("adds a site-native direct AppID link on IGDB", (t) => {
     const link = document.querySelector('a[href="https://cs.rin.ru/app/730"]');
     assert.ok(link);
     assert.equal(link.className, "external-link");
-    assert.match(link.textContent, /CS\.RIN\.RU/);
+    assert.equal(link.textContent.trim(), "");
+    assert.ok(link.querySelector('img[alt="CS.RIN.RU"]'));
+    assert.equal(link.title, "View on CS.RIN.RU");
 });
 
 test("waits for IGDB to render its Steam link", async (t) => {

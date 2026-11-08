@@ -4,7 +4,7 @@
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       https://github.com/Altansar69/CS.RIN.RU-Enhanced-external
-// @version         2.0.1
+// @version         2.0.2
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  Tudo o que diz respeito ao CS.RIN.RU - Steam Underground Community mas não age no site.
@@ -194,7 +194,7 @@ function addNativeExternalLink(referenceLink, marker) {
         rinButton.prepend(rinIcon, " ");
     }
 
-    replaceLinkLabel(rinButton, "CS.RIN.RU");
+    replaceLinkLabel(rinButton, marker === "igdb" ? "" : "CS.RIN.RU");
     referenceContainer.insertAdjacentElement("afterend", clonedContainer);
     return rinButton;
 }
@@ -207,11 +207,11 @@ function replaceLinkLabel(link, label) {
     }
 
     if (textNodes.length === 0) {
-        link.append(` ${label}`);
+        if (label) link.append(` ${label}`);
         return;
     }
 
-    textNodes[0].textContent = ` ${label}`;
+    textNodes[0].textContent = label ? ` ${label}` : "";
     textNodes.slice(1).forEach((node) => {
         node.textContent = "";
     });
