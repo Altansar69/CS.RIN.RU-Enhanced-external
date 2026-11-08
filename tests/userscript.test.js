@@ -104,7 +104,13 @@ test("adds a site-native direct AppID link on IGDB", (t) => {
     assert.ok(link);
     assert.equal(link.className, "external-link");
     assert.equal(link.textContent.trim(), "");
-    assert.ok(link.querySelector('img[alt="CS.RIN.RU"]'));
+    const icon = link.querySelector('img[alt="CS.RIN.RU"]');
+    assert.ok(icon);
+    assert.equal(link.style.width, "32px");
+    assert.equal(link.style.height, "32px");
+    assert.equal(link.style.padding, "0px");
+    assert.equal(icon.style.width, "100%");
+    assert.equal(icon.style.height, "100%");
     assert.equal(link.title, "View on CS.RIN.RU");
 });
 

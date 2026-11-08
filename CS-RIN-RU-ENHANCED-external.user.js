@@ -4,7 +4,7 @@
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       https://github.com/Altansar69/CS.RIN.RU-Enhanced-external
-// @version         2.0.2
+// @version         2.0.3
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  Tudo o que diz respeito ao CS.RIN.RU - Steam Underground Community mas não age no site.
@@ -187,6 +187,25 @@ function addNativeExternalLink(referenceLink, marker) {
     rinIcon.alt = "CS.RIN.RU";
     rinIcon.width = 16;
     rinIcon.height = 16;
+    if (marker === "igdb") {
+        const referenceRect = referenceLink.getBoundingClientRect();
+        const width = Math.round(referenceRect.width) || 32;
+        const height = Math.round(referenceRect.height) || 32;
+        rinButton.style.display = "inline-flex";
+        rinButton.style.alignItems = "center";
+        rinButton.style.justifyContent = "center";
+        rinButton.style.width = `${width}px`;
+        rinButton.style.height = `${height}px`;
+        rinButton.style.padding = "0";
+        rinButton.style.overflow = "hidden";
+        rinIcon.width = width;
+        rinIcon.height = height;
+        rinIcon.style.display = "block";
+        rinIcon.style.width = "100%";
+        rinIcon.style.height = "100%";
+        rinIcon.style.margin = "0";
+        rinIcon.style.objectFit = "cover";
+    }
     if (icon) {
         if (icon.className && typeof icon.className === "string") rinIcon.className = icon.className;
         icon.replaceWith(rinIcon);
