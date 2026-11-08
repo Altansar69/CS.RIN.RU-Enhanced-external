@@ -111,6 +111,8 @@ test("adds a site-native direct AppID link on IGDB", (t) => {
     assert.equal(link.style.padding, "0px");
     assert.equal(icon.style.width, "100%");
     assert.equal(icon.style.height, "100%");
+    assert.equal(icon.style.objectFit, "contain");
+    assert.equal(icon.style.objectPosition, "center");
     assert.equal(link.title, "View on CS.RIN.RU");
 });
 

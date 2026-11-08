@@ -4,7 +4,7 @@
 // @name:pt         CS.RIN.RU Melhorado (Externo)
 // @name:tr         Genişletilmiş CS.RIN.RU (Ek)
 // @namespace       https://github.com/Altansar69/CS.RIN.RU-Enhanced-external
-// @version         2.0.3
+// @version         2.0.4
 // @description     Everything that concerns CS.RIN.RU - Steam Underground Community but does not act on the site.
 // @description:fr  Tout ce qui concerne CS.RIN.RU - Steam Underground Community mais qui n'agit pas sur le site.
 // @description:pt  Tudo o que diz respeito ao CS.RIN.RU - Steam Underground Community mas não age no site.
@@ -204,7 +204,8 @@ function addNativeExternalLink(referenceLink, marker) {
         rinIcon.style.width = "100%";
         rinIcon.style.height = "100%";
         rinIcon.style.margin = "0";
-        rinIcon.style.objectFit = "cover";
+        rinIcon.style.objectFit = "contain";
+        rinIcon.style.objectPosition = "center";
     }
     if (icon) {
         if (icon.className && typeof icon.className === "string") rinIcon.className = icon.className;
