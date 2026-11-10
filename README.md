@@ -1,16 +1,17 @@
 # ![Icon of CS.RIN.RU](https://i.ibb.co/zXtW7WD/csrinfavicon32.png) CS RIN RU Enhanced (external)
 ![License](https://img.shields.io/badge/License-UNLICENSE-red) ![Release](https://img.shields.io/github/v/release/Altansar69/CS.RIN.RU-Enhanced-external) ![OS](https://img.shields.io/badge/OS-Windows%2FmacOS%2FLinux-green)
 
-Extension of [CS RIN RU Enhanced mod](https://github.com/SubZeroPL/cs-rin-ru-enhanced-mod) (to be used in conjunction with) for everything concerning the forum, but act on external pages (Steam, SteamDB etc...) and not on the forum itself.
+Extension of [CS RIN RU Enhanced mod](https://github.com/SubZeroPL/cs-rin-ru-enhanced-mod) for everything concerning the forum that acts on external game pages rather than on the forum itself.
 
 Official forum topic: https://cs.rin.ru/forum/viewtopic.php?f=14&t=75717
 
 ## 🔧 Features
-- On a game's [Steam](https://store.steampowered.com) page, a button has been added to take you to the game's cs.rin page.
-- On a game's [Steam](https://store.steampowered.com) page, its tags (cs.rin) are displayed in its title ([CRACKED] [UNCRACKED] etc...).
-- On a game's [SteamDB](https://steamdb.info) page, a button has been added to take you to the game's cs.rin page.
-- On a game's [SteamDB](https://steamdb.info) page, its tags (cs.rin) are displayed in its title ([CRACKED] [UNCRACKED] etc...).
-- On a game's [GG.Deals](https://gg.deals) page, a button has been added to take you to the game's cs.rin page (works only for base game, not for special editions/bundles/packs etc.).
+- Adds a CS.RIN.RU link to game pages on [Steam](https://store.steampowered.com), [SteamDB](https://steamdb.info), [PCGamingWiki](https://www.pcgamingwiki.com), [GG.Deals](https://gg.deals), [IsThereAnyDeal](https://isthereanydeal.com), and [IGDB](https://www.igdb.com).
+- Uses the exact Steam AppID route (`https://cs.rin.ru/app/{appid}`), avoiding approximate forum searches and ambiguous results.
+- Displays the tags from the matching CS.RIN.RU topic in the page title when they can be retrieved (`[CRACKED]`, `[UNCRACKED]`, etc.). Brackets that are part of the game's actual title are preserved and are not treated as forum tags.
+- Includes the existing companion [Millennium](https://steambrew.app/) plugin for the Steam desktop client.
+
+GG.Deals support is limited to base games for which a Steam AppID can be found; special editions, bundles, and packs may not have one.
 
 ## 🧑‍🤝‍🧑 Other related projects
 - [CS RIN RU Enhanced mod](https://github.com/SubZeroPL/cs-rin-ru-enhanced-mod) - Main project
@@ -20,11 +21,21 @@ see: [issues](https://github.com/Altansar69/CS.RIN.RU-Enhanced-external/issues)
 
 ## 🔨 Installation:
 1) Download a script extension like [Violentmonkey](https://violentmonkey.github.io/) or [Tampermonkey](https://www.tampermonkey.net/).
-2) Simply click on [this link](https://raw.githubusercontent.com/Altansar69/CS.RIN.RU-Enhanced-external/master/CS-RIN-RU-ENHANCED-external.user.js) and a pop-up window should appear asking you if you wish to install the extension.
+2) Simply click on [this link](https://raw.githubusercontent.com/Altansar69/CS.RIN.RU-Enhanced-external/v2.0/CS-RIN-RU-ENHANCED-external.user.js) and a pop-up window should appear asking you if you wish to install the extension.
 
 **Notes:** The script supports automatic updates, which means you don't have to download it again each time it's updated.
 
 *Developed & tested with [Violentmonkey](https://violentmonkey.github.io/) and [Tampermonkey](https://www.tampermonkey.net/) on [Firefox](https://www.mozilla.org/) and Chromium ([Brave](https://brave.com/)).*
+
+## 🏠 Millennium Steam Homebrew
+
+The existing Millennium plugin is included in [`millennium/cs-rin-ru-enhanced`](millennium/cs-rin-ru-enhanced). It adds the CS.RIN.RU button and topic tags directly to Steam store pages and uses the direct `https://cs.rin.ru/app/{appid}` route.
+
+To install it:
+
+1. Install [Millennium](https://steambrew.app/).
+2. Copy the `cs-rin-ru-enhanced` folder into Steam's `millennium/plugins` directory.
+3. Enable **CS.RIN.RU Enhanced** in Millennium and reload or restart Steam.
 
 ## 🔢 Versioning
 This project is following semantic versioning schema.
@@ -35,4 +46,4 @@ This project is following semantic versioning schema.
 - [SubZeroPL](https://github.com/SubZeroPL) - Project co-creator
 
 ## 📄 License
-This software is under the Unlicense, terms of which are available in [UNLICENSE.txt](UNLICENSE.txt])
+This software is under the Unlicense, terms of which are available in [LICENSE](LICENSE).
