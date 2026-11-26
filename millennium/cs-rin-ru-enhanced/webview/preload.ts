@@ -1,4 +1,18 @@
-const MILLENNIUM_IS_CLIENT_MODULE=!1,pluginName="cs-rin-ru-enhanced";function InitializePlugins(){var e,n;let t;(e=window.PLUGIN_LIST||(window.PLUGIN_LIST={}))[pluginName]||(e[pluginName]={}),(n=window.MILLENNIUM_PLUGIN_SETTINGS_STORE||(window.MILLENNIUM_PLUGIN_SETTINGS_STORE={}))[pluginName]||(n[pluginName]={}),window.MILLENNIUM_SIDEBAR_NAVIGATION_PANELS||(window.MILLENNIUM_SIDEBAR_NAVIGATION_PANELS={}),function(e){e[e.CallServerMethod=0]="CallServerMethod"}(t||(t={}));let o=window.MILLENNIUM_PLUGIN_SETTINGS_STORE[pluginName],a=`Millennium.Internal.IPC.[${pluginName}]`;const r={DropDown:["string","number","boolean"],NumberTextInput:["number"],StringTextInput:["string"],FloatTextInput:["number"],CheckBox:["boolean"],NumberSlider:["number"],FloatSlider:["number"]};o.ignoreProxyFlag=!1;const i=e=>new Proxy(e,{set(e,n,t){if(!(n in e))throw new TypeError(`Property ${String(n)} does not exist on plugin settings`);const i=r[e[n].type],l=e[n]?.range;if(i.includes("number")&&"number"==typeof t&&(l&&(t=function(e,n,t){return Math.max(n,Math.min(t,e))}(t,l[0],l[1])),t||(t=0)),!i.includes(typeof t))throw new TypeError(`Expected ${i.join(" or ")}, got ${typeof t}`);return e[n].value=t,((e,n)=>{o.ignoreProxyFlag||SteamClient.BrowserView.PostMessageToParent(a,JSON.stringify({name:e,value:n}))})(String(n),t),!0},get:(e,n)=>"__raw_get_internals__"===n?e:n in e?e[n].value:void 0});o.DefinePluginSetting=i,o.settingsStore=i({})}InitializePlugins();const __call_server_method__=(e,n)=>Millennium.callServerMethod(pluginName,e,n);function __wrapped_callable__(e){return e.startsWith("webkit:")?MILLENNIUM_API.callable((e,n)=>MILLENNIUM_API.__INTERNAL_CALL_WEBKIT_METHOD__(pluginName,e,n),e.replace(/^webkit:/,"")):MILLENNIUM_API.callable(__call_server_method__,e)}let PluginEntryPointMain=function(){return function(exports,MILLENNIUM){"use strict";
+// @ts-nocheck
+// CS.RIN.RU button and topic tags on Steam store pages.
+import * as MILLENNIUM from "millennium";
+
+// Calls a backend function with the same object-style arguments the old Millennium
+// callable() took; Starlight exposes them as positional ffi calls on `backend`.
+const __wrapped_callable__ = (name: string) => {
+  const legacy = typeof MILLENNIUM.callable === "function" ? MILLENNIUM.callable(name) : null;
+  return (args?: Record<string, unknown>) => {
+    const ffi = typeof backend !== "undefined" ? (backend as any)[name] : undefined;
+    if (typeof ffi === "function") return ffi(...(args ? Object.values(args) : []));
+    return legacy(args || {});
+  };
+};
+
 const LOG="[CS.RIN.RU]";
 const fetchRin=__wrapped_callable__("FetchRin");
 const RIN_ORIGIN="https://cs.rin.ru";
@@ -155,7 +169,6 @@ async function run(){
   addTags(titleElem,tags.length===0&&defaultTag&&found?[`[${defaultTag}]`]:tags);
 }
 
-exports.default=async function(){try{await run();}catch(err){console.error(LOG,err);}};
-Object.defineProperty(exports,"__esModule",{value:!0});return exports}({},window.MILLENNIUM_API)};function ExecutePluginModule(){let e=window.MILLENNIUM_PLUGIN_SETTINGS_STORE[pluginName];e.OnPluginConfigChange=function(n,t,o){n in e.settingsStore&&(e.ignoreProxyFlag=!0,e.settingsStore[n]=o,e.ignoreProxyFlag=!1)},MILLENNIUM_BACKEND_IPC.postMessage(0,{pluginName:pluginName,methodName:"__builtins__.__millennium_plugin_settings_parser__"}).then(async n=>{"string"==typeof n.returnValue&&(e.ignoreProxyFlag=!0,e.settingsStore=e.DefinePluginSetting(Object.fromEntries(JSON.parse(atob(n.returnValue)).map(e=>[e.functionName,e]))),e.ignoreProxyFlag=!1);let t=PluginEntryPointMain();Object.assign(window.PLUGIN_LIST[pluginName],{...t,__millennium_internal_plugin_name_do_not_use_or_change__:pluginName});let o=await t.default();var a;o&&(a=o)&&void 0!==a.title&&void 0!==a.icon&&void 0!==a.content?window.MILLENNIUM_SIDEBAR_NAVIGATION_PANELS[pluginName]=o:console.warn(`Plugin ${pluginName} does not contain proper SidebarNavigation props and therefor can't be mounted by Millennium. Please ensure it has a title, icon, and content.`)})}ExecutePluginModule();
-
-
+export default async function main(): Promise<void> {
+  try { await run(); } catch (err) { console.error("[CS.RIN.RU Enhanced]", err); }
+}

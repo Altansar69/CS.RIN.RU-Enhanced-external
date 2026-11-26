@@ -46,6 +46,9 @@ local function pass_security_check(url, body)
     return response ~= nil
 end
 
+---@ffi
+---@param url string
+---@return string
 function FetchRin(url)
     local ok, result = pcall(function()
         if type(url) ~= "string" or url:sub(1, #BASE + 1) ~= BASE .. "/" then
@@ -82,6 +85,8 @@ local function on_unload()
     logger:info("CS.RIN.RU Enhanced unloaded")
 end
 
+---@ffi
+---@return string
 function GetSettings()
     local ok, result = pcall(function()
         return json.encode({ success = true, data = settings.load() })
@@ -90,6 +95,9 @@ function GetSettings()
     return result
 end
 
+---@ffi
+---@param settings_json string
+---@return string
 function SaveSettings(settings_json)
     local ok, result = pcall(function()
         local parsed = json.decode(settings_json)
@@ -109,5 +117,3 @@ return {
     GetSettings = GetSettings,
     SaveSettings = SaveSettings,
 }
-
-
