@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ES2020",
+    "jsx": "react-jsx",
+    "declaration": false,
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "typeRoots": [
+      "./.millennium/types",
+      "./node_modules/@types"
+    ],
+    "paths": {
+      "millennium": [
+        "./.millennium/lsp/ts"
+      ]
+    }
+  },
+  "include": [
+    "frontend/**/*",
+    "webview/**/*",
+    ".millennium/**/*.d.ts"
+  ]
+}

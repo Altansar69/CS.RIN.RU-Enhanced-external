@@ -1,0 +1,15 @@
+{
+  "name": "cs-rin-ru-enhanced-millennium",
+  "private": true,
+  "version": "2.1.0",
+  "scripts": {
+    "build": "starlight pack",
+    "dev": "starlight watch",
+    "prepare": "starlight lsp"
+  },
+  "devDependencies": {
+    "@steambrew/starlight": "^1.1.7",
+    "@types/react": "19.1.1",
+    "@types/react-dom": "19.1.1"
+  }
+}

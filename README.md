@@ -12,6 +12,9 @@ Official forum topic: https://cs.rin.ru/forum/viewtopic.php?f=14&t=75717
 - On a game's [SteamDB](https://steamdb.info) page, its tags (cs.rin) are displayed in its title ([CRACKED] [UNCRACKED] etc...).
 - On a game's [GG.Deals](https://gg.deals) page, a button has been added to take you to the game's cs.rin page (works only for base game, not for special editions/bundles/packs etc.).
 
+## 🖥️ Inside the Steam client (Millennium)
+The Steam store page features (button and tags) also exist as a plugin for the Steam client itself, through [Millennium](https://steambrew.app/). See [`millennium/`](millennium/) for the source and install steps; the `.star` file is attached to the releases.
+
 ## 🧑‍🤝‍🧑 Other related projects
 - [CS RIN RU Enhanced mod](https://github.com/SubZeroPL/cs-rin-ru-enhanced-mod) - Main project
 

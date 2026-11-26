@@ -1,0 +1,32 @@
+[plugin]
+id = "com.altansar.csrinru"
+name = "CS.RIN.RU Enhanced"
+version = "2.1.0"
+author = "Altansar69"
+description = "Adds a CS.RIN.RU button and topic tags on Steam store pages (port of the CS.RIN.RU Enhanced (External) userscript)."
+
+[backend]
+entry = "backend/main.lua"
+sources = ["backend/**/*.lua"]
+
+[frontend]
+entry = "frontend/index.tsx"
+
+[webkit]
+entry = "webview/preload.ts"
+
+[compiler]
+output_path = "auto"
+
+[dev]
+auto_restart = true
+reload_steamui_when = "both"
+
+[logger]
+padding = 0
+backend_prefix = "BCK"
+frontend_prefix = "FRT"
+webview_prefix = "WEB"
+
+[patches]
+debug = false
