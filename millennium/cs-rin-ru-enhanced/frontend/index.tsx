@@ -11,8 +11,11 @@ const __wrapped_callable__ = (name: string) => {
   const legacy = typeof MILLENNIUM.callable === "function" ? MILLENNIUM.callable(name) : null;
   return (args?: Record<string, unknown>) => {
     const ffi = typeof backend !== "undefined" ? (backend as any)[name] : undefined;
-    if (typeof ffi === "function") return ffi(...(args ? Object.values(args) : []));
-    return legacy(args || {});
+    // Starlight may hand back the Lua JSON already decoded: keep returning text,
+    // since every caller does JSON.parse on the result
+    const asText = (value: unknown) => (typeof value === "string" ? value : JSON.stringify(value));
+    if (typeof ffi === "function") return Promise.resolve(ffi(...(args ? Object.values(args) : []))).then(asText);
+    return Promise.resolve(legacy(args || {})).then(asText);
   };
 };
 
